@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART SHOPPING</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F1E3;
+    --paper-alt:#EFE6D3;
+    --ink:#211D17;
+    --ink-soft:#6B6153;
+    --accent-marigold:#DB8A2A;
+    --accent-brick:#B03A2A;
+    --accent-indigo:#2B4A63;
+    --line: rgba(33,29,23,0.14);
+    --card-bg:#FFFDF8;
+    --shadow: 0 1px 2px rgba(33,29,23,0.06), 0 8px 24px -12px rgba(33,29,23,0.18);
+    --radius-s: 8px;
+    --radius-m: 14px;
+    --radius-l: 22px;
+    color-scheme: light;
+  }
+  html[data-theme="dark"]{
+    --paper:#14161C;
+    --paper-alt:#1B1E26;
+    --ink:#F1ECDD;
+    --ink-soft:#B0A995;
+    --accent-marigold:#F0A93F;
+    --accent-brick:#E2604A;
+    --accent-indigo:#7FA3C2;
+    --line: rgba(241,236,221,0.14);
+    --card-bg:#1E212B;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.55);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition: background .3s ease, color .3s ease;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--accent-marigold); color:#211D17;}
+  :focus-visible{outline:2px solid var(--accent-marigold); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- Spiral mark ---------- */
+  .spiral-mark{color:var(--accent-brick);}
+  .spiral-bg{
+    position:absolute; inset:0; pointer-events:none;
+    color:var(--accent-marigold); opacity:.10;
+  }
+  html[data-theme="dark"] .spiral-bg{opacity:.14;}
+
+  /* ---------- Header ---------- */
+  .site-header{
+    position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(3.5px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{display:flex; align-items:center; gap:20px; padding:14px 0;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; font-size:1.32rem; white-space:nowrap;}
+  .brand svg{width:30px; height:20px;}
+  .header-spacer{flex:1;}
+  .nav-controls{display:flex; align-items:center; gap:10px;}
+  .lang-switch{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden;}
+  .lang-switch button{
+    border:none; background:transparent; color:var(--ink-soft);
+    padding:7px 12px; font-size:.78rem; font-weight:700; letter-spacing:.03em; cursor:pointer;
+    transition: background .2s, color .2s;
+  }
+  .lang-switch button.active{background:var(--accent-indigo); color:#fff;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card-bg); color:var(--ink); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition: transform .2s, border-color .2s;
+  }
+  .icon-btn{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); position:relative; background:var(--card-bg); color:var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; transition: transform .2s, border-color .2s;}
+  .icon-btn:hover{border-color:var(--accent-marigold); transform:translateY(-1px);}
+  .icon-btn svg{width:18px; height:18px;}
+  .icon-badge{position:absolute; top:6px; right:6px; width:10px; height:10px; border-radius:50%; background:var(--accent-brick); border:1px solid var(--paper); display:none;}
+  .icon-btn.has-badge .icon-badge{display:block;}
+  .btn.new-badge{position:relative;}
+  .btn.new-badge::after{content:''; position:absolute; top:8px; right:8px; width:10px; height:10px; border-radius:50%; background:var(--accent-brick);}
+  .btn{
+    border:none; border-radius:999px; padding:10px 20px; font-weight:700; font-size:.88rem;
+    cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition: transform .15s ease, box-shadow .15s ease, background .2s;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--accent-brick); color:#fff;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 8px 18px -8px var(--accent-brick);}
+  .btn-outline{background:transparent; color:var(--ink); border:1.5px solid var(--line);}
+  .btn-outline:hover{border-color:var(--accent-marigold);}
+  .btn-ghost{background:var(--paper-alt); color:var(--ink);}
+  .user-chip{display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:5px 12px 5px 5px; background:var(--card-bg); cursor:pointer;}
+  .avatar{
+    width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:.75rem; color:#fff; flex-shrink:0;
+  }
+  .avatar.lg{width:52px; height:52px; font-size:1.1rem;}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative; overflow:hidden; padding:64px 0 40px;}
+  .hero-inner{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center; position:relative;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace;
+    font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-brick);
+    background:color-mix(in srgb, var(--accent-brick) 12%, transparent); padding:6px 12px; border-radius:999px; margin-bottom:18px;
+  }
+  .hero h1{font-size:clamp(2.1rem, 4vw, 3.4rem); line-height:1.06;}
+  .hero p.lead{margin-top:18px; font-size:1.12rem; color:var(--ink-soft); max-width:46ch; line-height:1.55;}
+  .hero-cta{display:flex; gap:12px; margin-top:30px; flex-wrap:wrap;}
+  .hero-stats{display:flex; gap:28px; margin-top:38px; flex-wrap:wrap;}
+  .hero-stat b{display:block; font-family:'Fraunces',serif; font-size:1.6rem;}
+  .hero-stat span{font-size:.8rem; color:var(--ink-soft);}
+  .hero-visual{position:relative; height:340px; display:flex; align-items:center; justify-content:center;}
+  .hero-visual svg{width:100%; height:100%; color:var(--accent-brick);}
+
+  /* ---------- Marketplace layout ---------- */
+  .touch-friendly button, .touch-friendly input, .touch-friendly select, .touch-friendly textarea{ touch-action: manipulation; }
+  .touch-friendly button{ min-height:44px; }
+  .touch-friendly input, .touch-friendly select, .touch-friendly textarea{ font-size:1rem; }
+
+  .market{padding:8px 0 80px;}
+  .market-inner{display:grid; grid-template-columns:220px 1fr; gap:32px; align-items:start;}
+  .filters{
+    position:sticky; top:84px; background:var(--card-bg); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:20px; display:flex; flex-direction:column; gap:18px;
+  }
+  .filters h3{font-size:.95rem;}
+  .filter-cats{display:flex; flex-direction:column; gap:4px;}
+  .filter-cats button{
+    text-align:left; background:none; border:none; padding:7px 8px; border-radius:8px; cursor:pointer;
+    color:var(--ink-soft); font-size:.87rem; display:flex; justify-content:space-between; gap:6px;
+  }
+  .filter-cats button.active{background:var(--paper-alt); color:var(--ink); font-weight:700;}
+  .filter-cats button:hover{color:var(--ink);}
+  .checkbox-row{display:flex; align-items:center; gap:9px; font-size:.87rem; cursor:pointer;}
+  .search-box{
+    display:flex; align-items:center; gap:8px; border:1.5px solid var(--line); border-radius:999px;
+    padding:9px 16px; background:var(--card-bg); margin-bottom:18px;
+  }
+  .search-box input{border:none; background:none; outline:none; color:var(--ink); font-size:.92rem; width:100%; font-family:inherit;}
+  .search-box svg{width:16px; height:16px; color:var(--ink-soft); flex-shrink:0;}
+  .market-toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;}
+  .result-count{color:var(--ink-soft); font-size:.88rem;}
+
+  .listings-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:20px;}
+  .card{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:var(--radius-m); overflow:hidden;
+    cursor:pointer; transition: transform .18s ease, box-shadow .18s ease; display:flex; flex-direction:column;
+  }
+  .card:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+  .card-photo{
+    aspect-ratio:4/3; position:relative; display:flex; align-items:center; justify-content:center;
+    font-size:2.6rem; overflow:hidden;
+  }
+  .card-photo img{width:100%; height:100%; object-fit:cover;}
+  .card-tag{
+    position:absolute; top:10px; left:10px; background:var(--accent-brick); color:#fff; font-size:.68rem;
+    font-weight:800; letter-spacing:.03em; text-transform:uppercase; padding:4px 9px; border-radius:999px;
+  }
+  .card-body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1;}
+  .card-price{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.02rem; color:var(--accent-indigo);}
+  html[data-theme="dark"] .card-price{color:var(--accent-marigold);}
+  .card-title{font-weight:700; font-size:.94rem; line-height:1.3;}
+  .card-meta{font-size:.78rem; color:var(--ink-soft); display:flex; justify-content:space-between; margin-top:auto; padding-top:6px;}
+  .empty-state{grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--ink-soft);}
+  .empty-state svg{width:50px; height:50px; color:var(--accent-marigold); margin-bottom:14px;}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--line); padding:36px 0; margin-top:20px;}
+  .footer-inner{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footer-brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700;}
+  .footer-brand svg{width:24px; height:16px; color:var(--accent-brick);}
+  footer p{color:var(--ink-soft); font-size:.82rem; margin:0;}
+
+  /* ---------- Modals ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,17,12,0.55); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; z-index:100; padding:20px;
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .modal{
+    background:var(--paper); border-radius:var(--radius-l); width:100%; max-width:480px; max-height:88vh;
+    overflow-y:auto; padding:30px; position:relative; border:1px solid var(--line); box-shadow:var(--shadow);
+    transform:translateY(10px) scale(.98); transition:transform .22s ease;
+  }
+  .overlay.open .modal{transform:translateY(0) scale(1);}
+  .modal.wide{max-width:640px;}
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card-bg); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .modal h2{font-size:1.4rem; margin-bottom:6px;}
+  .modal .sub{color:var(--ink-soft); font-size:.9rem; margin-bottom:22px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:.82rem; font-weight:700; margin-bottom:6px; color:var(--ink-soft);}
+  .field input[type=text], .field input[type=number], .field textarea, .field select{
+    width:100%; border:1.5px solid var(--line); border-radius:10px; padding:11px 13px; background:var(--card-bg);
+    color:var(--ink); font-family:inherit; font-size:.92rem; outline:none; transition:border-color .2s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{border-color:var(--accent-marigold);}
+  .field textarea{resize:vertical; min-height:80px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .exchange-toggle{display:flex; align-items:center; gap:10px; padding:12px 14px; border:1.5px dashed var(--line); border-radius:10px; cursor:pointer;}
+  .exchange-toggle input{width:18px; height:18px; accent-color:var(--accent-brick);}
+  .dropzone{
+    border:2px dashed var(--line); border-radius:14px; padding:22px; text-align:center; cursor:pointer;
+    color:var(--ink-soft); font-size:.86rem; transition:border-color .2s, background .2s;
+  }
+  .dropzone:hover{border-color:var(--accent-marigold); background:var(--paper-alt);}
+  .dropzone svg{width:26px; height:26px; margin-bottom:8px; color:var(--accent-marigold);}
+  .photo-preview{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+  .photo-preview .thumb{position:relative; width:70px; height:70px; border-radius:10px; overflow:hidden; border:1px solid var(--line);}
+  .photo-preview .thumb img{width:100%; height:100%; object-fit:cover;}
+  .photo-preview .thumb button{
+    position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.6); color:#fff; font-size:.7rem; cursor:pointer; line-height:1;
+  }
+  .modal-actions{display:flex; gap:10px; margin-top:22px;}
+  .modal-actions .btn{flex:1; justify-content:center;}
+
+  .google-row{
+    display:flex; align-items:center; gap:12px; width:100%; border:1.5px solid var(--line); border-radius:12px;
+    padding:13px 16px; background:var(--card-bg); cursor:pointer; font-weight:700; font-size:.92rem; color:var(--ink);
+    transition:border-color .2s, background .2s;
+  }
+  .google-row:hover{border-color:var(--accent-marigold);}
+  .auth-note{font-size:.76rem; color:var(--ink-soft); margin-top:16px; line-height:1.5; border-top:1px solid var(--line); padding-top:14px;}
+  .profile-section{display:grid; gap:18px;}
+  .profile-bio{display:flex; align-items:center; gap:12px; padding:16px; border:1px solid var(--line); border-radius:18px; background:var(--card-bg);}
+  .profile-bio .avatar{width:52px; height:52px; font-size:1rem;}
+  .profile-bio div{min-width:0;}
+  .profile-list{display:grid; gap:14px;}
+  .profile-item{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--card-bg);}
+  .profile-item div{min-width:0;}
+  .profile-item b{display:block; margin-bottom:4px;}
+  .profile-item .meta{font-size:.82rem; color:var(--ink-soft);}
+  .profile-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+  .profile-actions .btn{flex:1; justify-content:center;}
+
+  .detail-photo{width:100%; aspect-ratio:16/10; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:4rem; margin-bottom:16px;}
+  .detail-photo img{width:100%; height:100%; object-fit:cover;}
+  .detail-price{font-family:'JetBrains Mono',monospace; font-size:1.5rem; font-weight:700; color:var(--accent-brick); margin:8px 0;}
+  .detail-seller{display:flex; align-items:center; gap:12px; margin:18px 0; padding:14px; background:var(--paper-alt); border-radius:12px;}
+
+  /* toast */
+  #toast-container{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center;}
+  .toast{
+    background:var(--ink); color:var(--paper); padding:12px 20px; border-radius:999px; font-size:.86rem; font-weight:600;
+    box-shadow:var(--shadow); opacity:0; transform:translateY(10px); transition:opacity .25s, transform .25s;
+  }
+  .toast.show{opacity:1; transform:translateY(0);}
+
+  @media (max-width:860px){
+    .hero-inner{grid-template-columns:1fr;}
+    .hero-visual{height:200px; order:-1;}
+    .market-inner{grid-template-columns:1fr;}
+    .filters{position:static;}
+    .filters{border-radius:18px; padding:18px;}
+    .market-toolbar{flex-direction:column; align-items:flex-start;}
+    .search-box{width:100%;}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 14px;}
+    .header-inner{flex-wrap:wrap; gap:12px;}
+    .header-spacer{flex-basis:100%;}
+    .brand{gap:8px;}
+    .brand span.brand-text{display:none;}
+    .hero{padding:30px 0 24px;}
+    .hero p.lead{font-size:1rem; max-width:none;}
+    .hero-cta{gap:10px;}
+    .hero-stats{gap:16px;}
+    .hero-visual{height:180px;}
+    .filters{padding:16px;}
+    .search-box{padding:12px 14px;}
+    .search-box input{font-size:1rem;}
+    .filter-cats button{font-size:.95rem; padding:12px 10px;}
+    .checkbox-row{font-size:.95rem; gap:10px;}
+    .btn{padding:12px 18px;}
+    .listings-grid{gap:16px;}
+    .card{border-radius:18px;}
+    .modal{padding:24px; max-width:100%; margin:0 10px;}
+    .modal.wide{max-width:100%;}
+    .field{margin-bottom:18px;}
+    .field input[type=text], .field input[type=number], .field textarea, .field select{padding:14px 12px;}
+    .photo-preview{gap:12px;}
+    .photo-preview .thumb{width:80px; height:80px;}
+  }
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <svg viewBox="0 0 100 60" class="spiral-mark" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round">
+        <path d="M50 30 C 50 10, 30 5, 20 15 C 10 25, 15 40, 30 38 C 40 36, 40 26, 32 26"/>
+        <path d="M50 30 C 50 10, 70 5, 80 15 C 90 25, 85 40, 70 38 C 60 36, 60 26, 68 26"/>
+      </svg>
+      <span class="brand-text">SMART SHOPPING</span>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="nav-controls">
+      <div class="lang-switch" role="group">
+        <button data-lang="ru" id="langRu">RU</button>
+        <button data-lang="kg" id="langKg">KG</button>
+      </div>
+      <button class="icon-btn" id="favoritesBtn" title="Избранное" aria-label="Избранное">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.5-1.5-4-1.5-5.5 0L12 7.9 8.7 4.6c-1.5-1.5-4-1.5-5.5 0-1.6 1.6-1.6 4.1 0 5.7l3.1 3.1L12 21l5.7-7.6 3.1-3.1c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
+        <span class="icon-badge" id="favoritesBadge"></span>
+      </button>
+      <button class="icon-btn" id="themeToggle" title="Тема" aria-label="Тема">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></svg>
+      </button>
+      <button class="btn btn-primary" id="sellBtn" data-i18n="nav.sell">Продать</button>
+      <div id="authArea"></div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <svg class="spiral-bg" viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+    <path d="M320 200 C 320 100, 220 70, 160 120 C 100 170, 130 260, 210 250 C 260 244, 260 190, 215 190"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="eyebrow" data-i18n="hero.eyebrow">Жылкелди айылы</div>
+      <h1 data-i18n="hero.title">Продавай. Меняй. Находи нужное рядом.</h1>
+      <p class="lead" data-i18n="hero.lead">SMART SHOPPING — место, где соседи меняются и продают вещи друг другу. Без посредников и комиссий: сфотографировал, выложил, договорился.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" id="heroSellBtn" data-i18n="hero.cta.sell">Разместить объявление</button>
+        <button class="btn btn-outline" id="heroBrowseBtn" data-i18n="hero.cta.browse">Смотреть объявления</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b id="statListings">—</b><span data-i18n="hero.stat.listings">объявлений сейчас</span></div>
+        <div class="hero-stat"><b>0 сом</b><span data-i18n="hero.stat.fee">комиссия площадки</span></div>
+        <div class="hero-stat"><b>8</b><span data-i18n="hero.stat.categories">категорий</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <svg viewBox="0 0 300 300" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round">
+        <path d="M240 150 C 240 80, 170 60, 120 95 C 70 130, 90 195, 145 188 C 180 183, 180 145, 148 145"/>
+        <path d="M240 150 C 240 220, 170 240, 120 205"/>
+        <circle cx="150" cy="150" r="6" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="market">
+  <div class="wrap market-inner">
+    <aside class="filters">
+      <div>
+        <h2 data-i18n="filters.categories">Категории</h2>
+        <div class="filter-cats" id="filterCats"></div>
+      </div>
+      <div>
+        <label class="checkbox-row">
+          <input type="checkbox" id="exchangeOnly">
+          <span data-i18n="filters.exchangeOnly">Только обмен</span>
+        </label>
+      </div>
+      <button class="btn btn-ghost" id="resetFilters" data-i18n="filters.reset">Сбросить фильтры</button>
+    </aside>
+
+    <div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder" placeholder="Искать вещи…">
+      </div>
+      <div class="market-toolbar">
+        <span class="result-count" id="resultCount"></span>
+      </div>
+      <div class="listings-grid" id="listingsGrid"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round">
+        <path d="M50 30 C 50 10, 30 5, 20 15 C 10 25, 15 40, 30 38 C 40 36, 40 26, 32 26"/>
+        <path d="M50 30 C 50 10, 70 5, 80 15 C 90 25, 85 40, 70 38 C 60 36, 60 26, 68 26"/>
+      </svg>
+      SMART SHOPPING
+    </div>
+    <a data-i18n="footer.note" href="https://www.instagram.com/jusupbekoov/" style="text-decoration: none;">Instagram</a>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="authOverlay">✕</button>
+    <h2 data-i18n="auth.title">Войти, чтобы продолжить</h2>
+    <p class="sub" data-i18n="auth.sub">Регистрация только через Google-аккаунт — быстро и без паролей.</p>
+    <div id="googleStep1">
+      <button class="google-row" id="googleContinueBtn">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.2-2 13.8-5.4l-6.4-5.3C29.3 34.9 26.8 36 24 36c-5.4 0-9.9-3.4-11.5-8.2l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 2.9-3.1 5.2-5.9 6.7l6.4 5.3C39.8 37.1 44 31.4 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        <span data-i18n="auth.google">Продолжить с Google</span>
+      </button>
+      <p class="auth-note" data-i18n="auth.note">Для входа используйте кнопку выше. Вставьте свой Google OAuth Client ID в код и запустите страницу из веб-сервера.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="overlay" id="profileOverlay">
+  <div class="modal wide">
+    <button class="modal-close" data-close="profileOverlay">✕</button>
+    <h2 data-i18n="profile.title">Профиль</h2>
+    <p class="sub" data-i18n="profile.sub">Просмотрите свои данные и управляйте своими объявлениями.</p>
+    <div class="profile-section" id="profileSection"></div>
+  </div>
+</div>
+
+<!-- SELL MODAL -->
+<div class="overlay" id="sellOverlay">
+  <div class="modal wide">
+    <button class="modal-close" data-close="sellOverlay">✕</button>
+    <h2 id="sellOverlayTitle" data-i18n="sell.title">Новое объявление</h2>
+    <p class="sub" data-i18n="sell.sub">Заполните карточку — она сразу появится в общей ленте.</p>
+    <form id="sellForm">
+      <div class="field">
+        <label data-i18n="sell.photo">Фото товара</label>
+        <div class="dropzone" id="dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L17 17"/><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/></svg>
+          <div data-i18n="sell.photoHint">Нажмите, чтобы прикрепить фото</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
+        <div class="photo-preview" id="photoPreview"></div>
+      </div>
+      <div class="field">
+        <label data-i18n="sell.name">Название</label>
+        <input type="text" id="itemTitle" required maxlength="60">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label data-i18n="sell.category">Категория</label>
+          <select id="itemCategory"></select>
+        </div>
+        <div class="field">
+          <label data-i18n="sell.location">Номер телефона</label>
+          <input type="text" id="itemLocation" data-i18n-placeholder="sell.locationPh" placeholder="Например, +996 755939330" required>
+        </div>
+      </div>
+      <div class="field">
+        <label data-i18n="sell.description">Описание</label>
+        <textarea id="itemDescription" maxlength="400"></textarea>
+      </div>
+      <div class="field exchange-toggle" id="exchangeToggleRow">
+        <input type="checkbox" id="isExchange">
+        <span data-i18n="sell.exchangeLabel">Готов(а) к обмену вместо продажи</span>
+      </div>
+      <div class="field" id="priceField">
+        <label data-i18n="sell.price">Цена, сом</label>
+        <input type="number" id="itemPrice" min="0" step="1">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="sellOverlay" data-i18n="sell.cancel">Отмена</button>
+        <button type="submit" id="sellSubmitBtn" class="btn btn-primary" data-i18n="sell.publish">Опубликовать</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- FAVORITES MODAL -->
+<div class="overlay" id="favoritesOverlay">
+  <div class="modal wide">
+    <button class="modal-close" data-close="favoritesOverlay">✕</button>
+    <h2 data-i18n="favorites.title">Избранное</h2>
+    <p class="sub" data-i18n="favorites.sub">Сохранённые товары, которые вы отметили.</p>
+    <div id="favoritesContent"></div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal wide" id="detailModalContent"></div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+/* ================= I18N ================= */
+const I18N = {
+  ru: {
+    "nav.sell":"Продать",
+    "hero.eyebrow":"Село Жылкелди",
+    "hero.title":"Продавай. Меняй. Находи нужное рядом.",
+    "hero.lead":"SMART SHOPPING — место, где соседи меняются и продают вещи друг другу. Без посредников и комиссий: сфотографировал, выложил, договорился.",
+    "hero.cta.sell":"Разместить объявление",
+    "hero.cta.browse":"Смотреть объявления",
+    "hero.stat.listings":"объявлений сейчас",
+    "hero.stat.fee":"комиссия площадки",
+    "hero.stat.categories":"категорий",
+    "filters.categories":"Категории",
+    "filters.all":"Все категории",
+    "filters.exchangeOnly":"Только обмен",
+    "filters.reset":"Сбросить фильтры",
+    "search.placeholder":"Искать вещи…",
+    "results.count":"Найдено объявлений: {n}",
+    "empty.title":"Ничего не найдено",
+    "empty.sub":"Попробуйте другую категорию или сбросьте фильтры",
+    "footer.note":"Instagram",
+    "auth.title":"Войти, чтобы продолжить",
+    "auth.sub":"Регистрация только через Google-аккаунт — быстро и без паролей.",
+    "auth.google":"Продолжить с Google",
+    "auth.note":"Для входа используйте Google. Вставьте свой Google OAuth Client ID и запустите страницу через веб-сервер.",
+    "auth.choose":"Выберите аккаунт",
+    "sell.title":"Новое объявление",
+    "sell.sub":"Заполните карточку — она сразу появится в общей ленте.",
+    "sell.photo":"Фото товара",
+    "sell.photoHint":"Нажмите, чтобы прикрепить фото",
+    "sell.name":"Название",
+    "sell.category":"Категория",
+    "sell.location":"Номер телефона",
+    "sell.locationPh":"Например, +996 755939330",
+    "sell.description":"Описание",
+    "sell.exchangeLabel":"Готов(а) к обмену вместо продажи",
+    "sell.price":"Цена, сом",
+    "sell.cancel":"Отмена",
+    "sell.publish":"Опубликовать",
+    "sell.update":"Сохранить",
+    "sell.edit":"Редактировать",
+    "sell.delete":"Удалить",
+    "sell.editTitle":"Редактировать объявление",
+    "sell.confirmDelete":"Удалить объявление",
+    "sell.deleted":"Объявление удалено",
+    "sell.needLogin":"Сначала войдите через Google",
+    "sell.published":"Объявление опубликовано!",
+    "sell.needPhoneNumber":"Укажите телефон продавца",
+    "sell.needPhoto":"Прикрепите хотя бы одно фото",
+    "favorites.title":"Избранное",
+    "favorites.sub":"Сохранённые товары, которые вы отметили.",
+    "favorites.add":"Добавить в избранное",
+    "favorites.remove":"Удалить из избранного",
+    "favorites.emptyTitle":"Нет избранных товаров",
+    "favorites.emptySub":"Отметьте товар сердечком, и он появится здесь.",
+    "card.exchange":"Обмен",
+    "card.free":"Бесплатно",
+    "detail.contact":"Написать продавцу",
+    "detail.contacted":"Демо: в реальном проекте здесь откроется чат с продавцом",
+    "detail.postedBy":"Разместил(а)",
+    "detail.exchangeNote":"Владелец готов обменять эту вещь",
+    "detail.noPhone":"Телефон не указан",
+    "detail.missingPhone":"Телефон продавца не задан или написан неверно",
+    "auth.loggedInAs":"Вы вошли как",
+    "auth.logout":"Выйти",
+    "profile.title":"Профиль",
+    "profile.sub":"Просмотрите свои данные и управляйте своими объявлениями.",
+    "profile.myItems":"Моих объявлений: {n}",
+    "profile.noItems":"У вас ещё нет объявлений",
+    "profile.noItemsSub":"Создайте своё первое объявление и оно появится здесь.",
+    "time.justNow":"только что",
+    "time.minutesAgo":"{n} мин. назад",
+    "time.hoursAgo":"{n} ч. назад",
+    "time.daysAgo":"{n} дн. назад",
+    "cat.electronics":"Электроника","cat.clothing":"Одежда","cat.furniture":"Мебель","cat.transport":"Транспорт","cat.books":"Книги","cat.sport":"Спорт","cat.home":"Для дома","cat.other":"Разное",
+    "theme.light":"Светлая тема","theme.dark":"Тёмная тема"
+  },
+  kg: {
+    "nav.sell":"Сатуу",
+    "hero.eyebrow":"Жылкелди айылы",
+    "hero.title":"Сат. Алмаштыр. Керектүүнү жакын жерден тап.",
+    "hero.lead":"SMART SHOPPING — коңшулар буюмдарды бири-бирине сатып, алмаштырган жер. Ортомчусуз жана комиссиясыз: сүрөткө тартып, жарыялап, макулдашасың.",
+    "hero.cta.sell":"Жарыя жайгаштыруу",
+    "hero.cta.browse":"Жарыяларды көрүү",
+    "hero.stat.listings":"учурдагы жарыялар",
+    "hero.stat.fee":"алаңдын комиссиясы",
+    "hero.stat.categories":"категория",
+    "filters.categories":"Категориялар",
+    "filters.all":"Бардык категориялар",
+    "filters.exchangeOnly":"Алмашуу",
+    "filters.reset":"Чыпкаларды тазалоо",
+    "search.placeholder":"Буюм издөө…",
+    "results.count":"Табылган жарыялар: {n}",
+    "empty.title":"Эч нерсе табылган жок",
+    "empty.sub":"Башка категорияны тандаңыз же чыпкаларды тазалаңыз",
+    "footer.note":"Instagram",
+    "auth.title":"Улантуу үчүн кириңиз",
+    "auth.sub":"Каттоо жалгыз гана Google аккаунту аркылуу — тез жана сырсөзсүз.",
+    "auth.google":"Google менен улантуу",
+    "auth.note":"Google менен кирүү үчүн жогорудагы баскычты колдонуп, Google OAuth Client IDни кодго киргизип, веб-серверде ачуу керек.",
+    "auth.choose":"Аккаунтту тандаңыз",
+    "sell.title":"Жаңы жарыя",
+    "sell.sub":"Картаны толтуруңуз — ал дароо жалпы тизмеде пайда болот.",
+    "sell.photo":"Буюмдун сүрөтү",
+    "sell.photoHint":"Сүрөт тиркөө үчүн басыңыз",
+    "sell.name":"Аталышы",
+    "sell.category":"Категория",
+    "sell.location":"Телефон номериниз",
+    "sell.locationPh":"Мисалы, +996 755939330",
+    "sell.description":"Сүрөттөмө",
+    "sell.exchangeLabel":"Сатуунун ордуна алмашууга даярмын",
+    "sell.price":"Баасы, сом",
+    "sell.cancel":"Жокко чыгаруу",
+    "sell.publish":"Жарыялоо",
+    "sell.update":"Сактоо",
+    "sell.edit":"Түзөтүү",
+    "sell.delete":"Өчүрүү",
+    "sell.editTitle":"Жарыяны түзөтүү",
+    "sell.confirmDelete":"Жарыяны өчүрүү",
+    "sell.deleted":"Жарыя өчүрүлдү",
+    "sell.needLogin":"Алгач Google аркылуу кириңиз",
+    "sell.published":"Жарыя жарыяланды!",
+    "sell.needPhoto":"Жок дегенде бир сүрөт тиркеңиз",
+    "favorites.title":"Тандалгандар",
+    "favorites.sub":"Сакталган товарларды бул жерде көрө аласыз.",
+    "favorites.add":"Тандалгандар кошуу",
+    "favorites.remove":"Тандалгандардан алып салуу",
+    "favorites.emptyTitle":"Тандалгандар жок",
+    "favorites.emptySub":"Жүрөктү басып, товарды сактаңыз.",
+    "card.exchange":"Алмашуу",
+    "card.free":"Акысыз",
+    "detail.contact":"Сатуучуга жазуу",
+    "detail.contacted":"Демо: чыныгы долбоордо бул жерде сатуучу менен чат ачылат",
+    "detail.postedBy":"Жарыялаган",
+    "detail.exchangeNote":"Ээси бул буюмду алмашууга даяр",
+    "detail.noPhone":"Телефон көрсөтүлгөн эмес",
+    "detail.missingPhone":"Сатууучунун телефону белгиленген эмес, же туура эмес жазылган",
+    "auth.loggedInAs":"Сиз кирдиңиз",
+    "auth.logout":"Чыгуу",
+    "profile.title":"Профиль",
+    "profile.sub":"Өзүңүздүн маалыматтарды карап чыгып, жарыяларды башкарсаңыз болот.",
+    "profile.myItems":"Менин жарыяларым: {n}",
+    "profile.noItems":"Сизде азырынча жарыя жок",
+    "profile.noItemsSub":"Биринчи жарыяңызды түзүп, ал бул жерге көрсөтүлөт.",
+    "time.justNow":"азыр эле",
+    "time.minutesAgo":"{n} мүн. мурун",
+    "time.hoursAgo":"{n} саат мурун",
+    "time.daysAgo":"{n} күн мурун",
+    "cat.electronics":"Электроника","cat.clothing":"Кийим","cat.furniture":"Эмерек","cat.transport":"Унаа","cat.books":"Китептер","cat.sport":"Спорт","cat.home":"Үй үчүн","cat.other":"Ар түрдүү",
+    "theme.light":"Күндүзгү тема","theme.dark":"Түнкү тема"
+  }
+};
+function t(key, vars){
+  let str = (I18N[STATE.lang] && I18N[STATE.lang][key]) || key;
+  if(vars){ Object.keys(vars).forEach(k=>{ str = str.replace('{'+k+'}', vars[k]); }); }
+  return str;
+}
+
+/* ================= CATEGORIES ================= */
+const CATEGORIES = [
+  {id:'electronics', icon:'📱'},
+  {id:'clothing', icon:'👕'},
+  {id:'furniture', icon:'🛋️'},
+  {id:'transport', icon:'🚲'},
+  {id:'books', icon:'📚'},
+  {id:'sport', icon:'⚽'},
+  {id:'home', icon:'🏠'},
+  {id:'other', icon:'📦'},
+];
+
+const AVATAR_COLORS = ['#B03A2A','#2B4A63','#DB8A2A','#5C6B3E','#7A4B8A','#2E7D6B'];
+function colorFor(name){ let h=0; for(let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h); return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length]; }
+function initials(name){ return name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+
+const SUPABASE_URL = 'https://bmcftxtohcncwrejdtfd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtY2Z0eHRvaGNuY3dyZWpkdGZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNjQ0NTcsImV4cCI6MjA5ODY0MDQ1N30.AdhWsku-L2kgqaM50eYa89h7Ht3fgrJp1eEtqsn1xEE';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const GOOGLE_CLIENT_ID = '952157430601-3sfm0uml1i0uahgi42eutr4l65q4jofn.apps.googleusercontent.com';
+function decodeJwtResponse(token){ const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c=> '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')); return JSON.parse(jsonPayload); }
+function initGoogleIdentity(){ if(!window.google?.accounts?.id) return; window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse, ux_mode: 'popup' }); }
+function waitForGoogleInit(){ if(window.google?.accounts?.id){ initGoogleIdentity(); } else { setTimeout(waitForGoogleInit, 200); } }
+async function handleCredentialResponse(response){
+  try{
+    const payload = decodeJwtResponse(response.credential);
+    if(payload.iss && payload.iss.includes('accounts.google.com') && payload.aud === GOOGLE_CLIENT_ID){
+      await completeLogin({ name: payload.name || payload.email, email: payload.email, picture: payload.picture });
+    } else {
+      showToast('Google sign-in error');
+    }
+  }catch(err){ console.error(err); showToast('Google sign-in failed'); }
+}
+async function completeLogin(user){
+  STATE.user = { name: user.name, email: user.email, picture: user.picture || '' };
+  await syncProfileToSupabase(STATE.user);
+  await storageSet('almash_profile', STATE.user, false);
+  renderAuthArea();
+  closeModal('authOverlay');
+  showToast('👋 ' + t('auth.loggedInAs') + ' ' + STATE.user.name.split(' ')[0]);
+  if(STATE._openSellAfterLogin){ STATE._openSellAfterLogin=false; openSellModal(); }
+}
+
+
+const SEED_LISTINGS = [
+  {title:{ru:"Горный велосипед Trek",kg:"Trek тоо велосипеди"}, description:{ru:"Почти новый, катались всего сезон. Все передачи работают исправно.",kg:"Дээрлик жаңы, бир гана сезон унаа тебилди. Бардык тайманалар жакшы иштейт."}, category:"transport", price:8500, isExchange:false, location:"Джал", photo:null, emoji:"🚲", author:"Данияр Токтогулов"},
+  {title:{ru:"Акустическая гитара Yamaha",kg:"Yamaha акустикалык гитарасы"}, description:{ru:"Отдам в хорошие руки, готов обменять на синтезатор или MIDI-клавиатуру.",kg:"Жакшы колго берем, синтезатор же MIDI-клавиатурага алмашууга даярмын."}, category:"other", price:null, isExchange:true, location:"Восток-5", photo:null, emoji:"🎸", author:"Айбек Осмонов"},
+  {title:{ru:"Кроссовки Nike Air, 42 размер",kg:"Nike Air кроссовкалары, 42-өлчөм"}, description:{ru:"Носили пару раз, коробка в комплекте.",kg:"Бир нече жолу гана кийилген, кутусу менен."}, category:"clothing", price:3200, isExchange:false, location:"Ак-Босого", photo:null, emoji:"👟", author:"Салтанат Жумабекова"},
+  {title:{ru:"Диван раскладной",kg:"Ачылма диван"}, description:{ru:"Удобный, есть ящик для белья. Самовывоз.",kg:"Ыңгайлуу, кийим салгыч жашиги бар. Өзү алып кетүү."}, category:"furniture", price:12000, isExchange:false, location:"Аламедин базары", photo:null, emoji:"🛋️", author:"Нурия Сатыбалдиева"},
+  {title:{ru:"Фотоаппарат Canon EOS 600D",kg:"Canon EOS 600D фотоаппараты"}, description:{ru:"С объективом 18-55мм, сумка в подарок.",kg:"18-55мм объектив менен, сумка белекке."}, category:"electronics", price:15000, isExchange:false, location:"Асанбай", photo:null, emoji:"📷", author:"Данияр Токтогулов"},
+  {title:{ru:"Книги по программированию",kg:"Программалоо боюнча китептер"}, description:{ru:"Комплект из 5 книг, меняю на художественную литературу.",kg:"5 китептен турган топтом, көркөм адабиятка алмашам."}, category:"books", price:null, isExchange:true, location:"6 мкр", photo:null, emoji:"📚", author:"Салтанат Жумабекова"},
+  {title:{ru:"Часы Casio, винтаж",kg:"Casio сааты, винтаж"}, description:{ru:"Рабочее состояние, батарейка новая.",kg:"Иштеп турат, батарейкасы жаңы."}, category:"other", price:1800, isExchange:false, location:"Городок Энергетиков", photo:null, emoji:"⌚", author:"Айбек Осмонов"},
+  {title:{ru:"Электрочайник, новый",kg:"Электр чайнек, жаңы"}, description:{ru:"В упаковке, не подошёл по цвету к кухне.",kg:"Кутусунда, ашкананын түсүнө туура келбей калды."}, category:"home", price:900, isExchange:false, location:"Джал", photo:null, emoji:"☕", author:"Нурия Сатыбалдиева"},
+];
+
+/* ================= STATE ================= */
+const STATE = {
+  lang: 'ru',
+  theme: 'light',
+  user: null,
+  listings: [],
+  filter: { category: null, exchangeOnly:false, query:'' },
+  pendingPhotos: [],
+  editingListingId: null,
+  favorites: [],
+  lastVisitAt: null,
+  newItemsCount: 0
+};
+
+/* ================= STORAGE HELPERS ================= */
+async function storageGet(key, shared){
+  try{
+    if(window.storage?.get){
+      const r = await window.storage.get(key, shared);
+      return r ? JSON.parse(r.value) : null;
+    }
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+async function storageSet(key, value, shared){
+  try{
+    if(window.storage?.set){
+      await window.storage.set(key, JSON.stringify(value), shared);
+    } else {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+  }catch(e){ console.error('storage set failed', e); }
+}
+function loadFavorites(){
+  const saved = localStorage.getItem('almash_favorites');
+  STATE.favorites = saved ? JSON.parse(saved) : [];
+}
+function saveFavorites(){
+  localStorage.setItem('almash_favorites', JSON.stringify(STATE.favorites));
+}
+function toggleFavorite(id){
+  if(!id) return;
+  if(STATE.favorites.includes(id)){
+    STATE.favorites = STATE.favorites.filter(f=>f!==id);
+  } else {
+    STATE.favorites.push(id);
+  }
+  saveFavorites();
+  updateFavoritesBadge();
+  if(document.getElementById('favoritesOverlay')?.classList.contains('open')){
+    renderFavorites();
+  }
+}
+function isFavorite(id){
+  return STATE.favorites.includes(id);
+}
+function updateFavoritesBadge(){
+  const badge = document.getElementById('favoritesBadge');
+  const btn = document.getElementById('favoritesBtn');
+  if(!badge || !btn) return;
+  if(STATE.favorites.length > 0){
+    btn.classList.add('has-badge');
+  } else {
+    btn.classList.remove('has-badge');
+  }
+}
+function loadLastVisit(){
+  const saved = localStorage.getItem('almash_last_visit');
+  STATE.lastVisitAt = saved ? parseInt(saved,10) : null;
+}
+function saveLastVisit(){
+  STATE.lastVisitAt = Date.now();
+  localStorage.setItem('almash_last_visit', String(STATE.lastVisitAt));
+}
+function updateNewItemsCount(){
+  if(!STATE.lastVisitAt){ STATE.newItemsCount = 0; }
+  else { STATE.newItemsCount = STATE.listings.filter(l=>l.createdAt > STATE.lastVisitAt).length; }
+  const heroBtn = document.getElementById('heroBrowseBtn');
+  if(heroBtn){
+    heroBtn.classList.toggle('new-badge', STATE.newItemsCount > 0);
+  }
+}
+function renderFavorites(){
+  const wrap = document.getElementById('favoritesContent');
+  if(!wrap) return;
+  const favItems = STATE.listings.filter(l=>STATE.favorites.includes(l.id));
+  if(favItems.length === 0){
+    wrap.innerHTML = `<div class="empty-state"><h3>${t('favorites.emptyTitle')}</h3><p>${t('favorites.emptySub')}</p></div>`;
+    return;
+  }
+  wrap.innerHTML = '';
+  favItems.forEach(l=>{
+    const cat = CATEGORIES.find(c=>c.id===l.category);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-photo" style="background:${l.photo ? 'none' : 'var(--paper-alt)'};">
+        <button class="favorite-toggle active" data-fav-id="${l.id}" title="${t('favorites.remove')}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.5-1.5-4-1.5-5.5 0L12 7.9 8.7 4.6c-1.5-1.5-4-1.5-5.5 0-1.6 1.6-1.6 4.1 0 5.7l3.1 3.1L12 21l5.7-7.6 3.1-3.1c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
+        </button>
+        ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
+      </div>
+      <div class="card-body">
+        <div class="card-price">${l.isExchange ? '⇄ ' + t('card.exchange') : (l.price ? formatPrice(l.price) : t('card.free'))}</div>
+        <div class="card-title">${localized(l.title)}</div>
+        <div class="card-meta"><span>${l.location||''}</span><span>${relativeTime(l.createdAt)}</span></div>
+      </div>`;
+    const favButton = card.querySelector('.favorite-toggle');
+    favButton.onclick = (e)=>{ e.stopPropagation(); toggleFavorite(l.id); card.remove(); };
+    card.onclick = ()=>{ closeModal('favoritesOverlay'); openDetail(l); };
+    wrap.appendChild(card);
+  });
+}
+
+async function fetchListingsFromSupabase(){
+  try{
+    const { data, error } = await supabaseClient
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if(error){ console.error('Supabase fetch listings failed', error); return []; }
+    return (data || []).map(item=>({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      category: item.category,
+      price: item.price,
+      isExchange: item.is_exchange,
+      location: item.location,
+      phone: item.phone || item.location,
+      photo: item.main_photo_url,
+      emoji: item.emoji || null,
+      authorName: item.author_name || '',
+      authorEmail: item.author_email || '',
+      createdAt: item.created_at ? new Date(item.created_at).getTime() : Date.now(),
+      updatedAt: item.updated_at ? new Date(item.updated_at).getTime() : item.created_at ? new Date(item.created_at).getTime() : Date.now()
+    }));
+  }catch(err){ console.error('Supabase fetch listings failed', err); return []; }
+}
+
+async function syncProfileToSupabase(user){
+  try{
+    const profile = { email: user.email, name: user.name, picture: user.picture || '' };
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .upsert(profile, { onConflict: 'email' })
+      .select()
+      .single();
+    if(error){ console.error('Supabase sync profile failed', error); return null; }
+    STATE.user.id = data.id;
+    STATE.user.email = data.email;
+    STATE.user.name = data.name;
+    STATE.user.picture = data.picture;
+    return data;
+  }catch(err){ console.error('Supabase sync profile failed', err); return null; }
+}
+
+async function saveListingToSupabase(listing){
+  try{
+    if(!STATE.user?.id && STATE.user?.email){
+      const synced = await syncProfileToSupabase(STATE.user);
+      if(!synced){
+        showToast('Не удалось связать профиль с Supabase');
+        return null;
+      }
+      await storageSet('almash_profile', STATE.user, false);
+    }
+
+    const record = {
+        id: listing.id,
+        user_id: STATE.user?.id || listing.user_id,
+        title: listing.title,
+        description: listing.description,
+        category: listing.category,
+        price: listing.price,
+        is_exchange: listing.is_exchange,
+        location: listing.location,
+        phone: listing.phone || listing.location,
+        main_photo_url: listing.photo,
+        author_name: listing.authorName,
+        author_email: listing.authorEmail,
+        created_at: listing.createdAt ? new Date(listing.createdAt).toISOString() : undefined,
+        updated_at: new Date().toISOString()
+    };
+
+        const { data, error } = await supabaseClient
+            .from('listings')
+            .upsert(record, { onConflict: 'id' })
+            .select();
+
+        if (error) {
+            console.error('Supabase save listing failed', error);
+            showToast('Ошибка при сохранении объявления');
+            return null;
+        }
+
+        if (!data || data.length === 0) {
+            console.error('Supabase save listing returned no data', { record, data });
+            showToast('Ошибка при сохранении объявления');
+            return null;
+        }
+
+    if(Array.isArray(data)){
+      return data[0] || null;
+    }
+    return data;
+  }catch(err){
+    console.error('Supabase save listing failed', err);
+    showToast('Ошибка при сохранении объявления');
+    return null;
+  }
+}
+
+async function deleteListingFromSupabase(id){
+  try{
+    const { error } = await supabaseClient.from('listings').delete().eq('id', id);
+    if(error){ console.error('Supabase delete listing failed', error); }
+  }catch(err){ console.error('Supabase delete listing failed', err); }
+}
+
+/* ================= INIT ================= */
+async function init(){
+
+  const prefs = await storageGet('almash_prefs', false);
+  if(prefs){ STATE.lang = prefs.lang || 'ru'; STATE.theme = prefs.theme || 'light'; }
+  const profile = await storageGet('almash_profile', false);
+  if(profile){
+    STATE.user = profile;
+    if(profile.email && !profile.id){
+      await syncProfileToSupabase(STATE.user);
+      await storageSet('almash_profile', STATE.user, false);
+    }
+  }
+
+  loadFavorites();
+  loadLastVisit();
+
+  const listings = await fetchListingsFromSupabase();
+  STATE.listings = listings || [];
+
+  applyTheme(); applyLang();
+  renderFilterCats(); renderAuthArea(); renderListings();
+  updateFavoritesBadge();
+  updateNewItemsCount();
+  bindEvents();
+  waitForGoogleInit();
+}
+
+/* ================= THEME / LANG ================= */
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', STATE.theme);
+  const icon = document.getElementById('themeIcon');
+  if(STATE.theme === 'dark'){
+    icon.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+  }
+  document.getElementById('themeToggle').title = t('theme.'+(STATE.theme==='dark'?'dark':'light'));
+}
+function applyLang() {
+    // Безопасно проверяем язык, по умолчанию ставим 'ru'
+    STATE.lang = STATE.lang || 'ru';
+    document.documentElement.lang = STATE.lang;
+
+    // Безопасное переключение классов для кнопок переключения языка
+    const btnRu = document.getElementById('langRu');
+    const btnKg = document.getElementById('langKg');
+    if (btnRu) btnRu.classList.toggle('active', STATE.lang === 'ru');
+    if (btnKg) btnKg.classList.toggle('active', STATE.lang === 'kg');
+
+    // Перевод обычного текста
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key) el.textContent = t(key);
+    });
+
+    // Перевод плейсхолдеров в инпутах
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (key) el.placeholder = t(key);
+    });
+
+    // Безопасный вызов функций рендеринга (если они существуют)
+    if (typeof renderFilterCats === 'function') renderFilterCats();
+    if (typeof renderCategorySelect === 'function') renderCategorySelect();
+    if (typeof renderListings === 'function') renderListings();
+}
+
+async function savePrefs(){ await storageSet('almash_prefs', {lang:STATE.lang, theme:STATE.theme}, false); }
+
+/* ================= CHIPS & FILTER CATS ================= */
+function renderFilterCats(){
+  const wrap = document.getElementById('filterCats');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(c=>{
+    const count = STATE.listings.filter(l=>l.category===c.id).length;
+    const btn = document.createElement('button');
+    btn.className = STATE.filter.category===c.id ? 'active' : '';
+    btn.innerHTML = `<span>${c.icon} ${t('cat.'+c.id)}</span><span class="mono">${count}</span>`;
+    btn.onclick = ()=>{ STATE.filter.category = (STATE.filter.category===c.id? null : c.id); renderFilterCats(); renderListings(); };
+    wrap.appendChild(btn);
+  });
+}
+function renderCategorySelect(){
+  const sel = document.getElementById('itemCategory');
+  sel.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}">${c.icon} ${t('cat.'+c.id)}</option>`).join('');
+}
+
+/* ================= LISTINGS RENDER ================= */
+function relativeTime(ts){
+  const diff = Math.floor((Date.now()-ts)/1000);
+  if(diff < 60) return t('time.justNow');
+  if(diff < 3600) return t('time.minutesAgo',{n:Math.floor(diff/60)});
+  if(diff < 86400) return t('time.hoursAgo',{n:Math.floor(diff/3600)});
+  return t('time.daysAgo',{n:Math.floor(diff/86400)});
+}
+function localized(field){ return (typeof field === 'object' && field !== null) ? (field[STATE.lang] || field.ru || field.kg || '') : (field || ''); }
+function formatPrice(n){ return n.toLocaleString('ru-RU').replace(/,/g,' ') + ' сом'; }
+function formatWhatsAppUrl(phone, text){
+  if(!phone) return null;
+  let digits = phone.replace(/\D/g, '');
+  if(digits.length === 9) digits = '996' + digits;
+  else if(digits.length === 10 && digits.startsWith('0')) digits = '996' + digits.slice(1);
+  if(digits.length !== 12) return null;
+  return 'https://wa.me/' + digits + (text ? '?text=' + encodeURIComponent(text) : '');
+}
+
+function getFiltered(){
+  return STATE.listings.filter(l=>{
+    if(STATE.filter.category && l.category !== STATE.filter.category) return false;
+    if(STATE.filter.exchangeOnly && !l.isExchange) return false;
+    if(STATE.filter.query){
+      const q = STATE.filter.query.toLowerCase();
+      const title = localized(l.title).toLowerCase();
+      if(!title.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=>b.createdAt-a.createdAt);
+}
+
+function renderListings(){
+  const grid = document.getElementById('listingsGrid');
+  const filtered = getFiltered();
+  document.getElementById('statListings').textContent = STATE.listings.length;
+  document.getElementById('resultCount').textContent = t('results.count',{n:filtered.length});
+  grid.innerHTML = '';
+  if(filtered.length === 0){
+    grid.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <h3>${t('empty.title')}</h3><p>${t('empty.sub')}</p>
+    </div>`;
+    return;
+  }
+  filtered.forEach(l=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const cat = CATEGORIES.find(c=>c.id===l.category);
+    card.innerHTML = `
+      <div class="card-photo" style="background:${l.photo ? 'none' : 'var(--paper-alt)'};">
+        ${l.isExchange ? `<span class="card-tag">${t('card.exchange')}</span>` : ''}
+        ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
+      </div>
+      <div class="card-body">
+        <div class="card-price">${l.isExchange ? '⇄ ' + t('card.exchange') : (l.price ? formatPrice(l.price) : t('card.free'))}</div>
+        <div class="card-title">${localized(l.title)}</div>
+        <div class="card-meta"><span>${l.location||''}</span><span>${relativeTime(l.createdAt)}</span></div>
+      </div>`;
+    card.onclick = ()=> openDetail(l);
+    grid.appendChild(card);
+  });
+}
+
+/* ================= DETAIL MODAL ================= */
+function openDetail(l){
+  const cat = CATEGORIES.find(c=>c.id===l.category);
+  const content = document.getElementById('detailModalContent');
+  const phone = l.location || '';
+  const waUrl = formatWhatsAppUrl(phone, `${t('detail.contact')} — ${localized(l.title)}`);
+  content.innerHTML = `
+    <button class="modal-close" data-close="detailOverlay">✕</button>
+    <div class="detail-photo" style="background:${l.photo?'none':'var(--paper-alt)'}; position:relative;">
+      ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
+    </div>
+    <div class="eyebrow">${cat ? cat.icon+' '+t('cat.'+cat.id) : ''}</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <h2 style="margin: 0;">${localized(l.title)}</h2>
+    <button id="detailFavoriteBtn" title="${isFavorite(l.id) ? t('favorites.remove') : t('favorites.add')}" style="background: none; border: none; cursor: pointer; padding: 8px; color: ${isFavorite(l.id) ? '#ff4b4b' : '#888'}; transition: color 0.2s;">
+        <svg viewBox="0 0 24 24" fill="${isFavorite(l.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    </button>
+    </div>
+    <div class="detail-price">${l.isExchange ? '⇄ '+t('card.exchange') : (l.price?formatPrice(l.price):t('card.free'))}</div>
+    <p>${localized(l.description)}</p>
+    ${l.isExchange ? `<p class="sub">${t('detail.exchangeNote')}</p>` : ''}
+    <div class="detail-seller">
+      <div class="avatar" style="background:${colorFor(l.authorName||'?')}">${initials(l.authorName||'?')}</div>
+      <div><div style="font-size:.78rem;color:var(--ink-soft);">${t('detail.postedBy')}</div><b>${l.authorName||''}</b></div>
+    </div>
+    <p class="sub">📞 ${phone || t('detail.noPhone')}</p>
+    <p class="sub">${relativeTime(l.createdAt)}</p>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" id="contactBtn">${t('detail.contact')}</button>
+  `;
+  const favBtn = content.querySelector('#detailFavoriteBtn');
+  if(favBtn){
+    favBtn.onclick = ()=>{
+      toggleFavorite(l.id);
+      const active = isFavorite(l.id);
+favBtn.title = active ? t('favorites.remove') : t('favorites.add');
+const svg = favBtn.querySelector('svg');
+if (svg) {
+    svg.setAttribute('fill', active ? 'currentColor' : 'none');
+    favBtn.style.color = active ? '#ff4b4b' : '#888';
+}
+    };
+  }
+  content.querySelector('#contactBtn').onclick = ()=>{
+    if(waUrl){ window.open(waUrl, '_blank'); }
+    else { showToast(t('detail.missingPhone')); }
+  };
+  content.querySelector('[data-close]').onclick = ()=> closeModal('detailOverlay');
+  openModal('detailOverlay');
+}
+
+/* ================= MODALS ================= */
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+/* ================= AUTH ================= */
+function isOwnListing(listing){ return STATE.user && (listing.authorEmail === STATE.user.email || listing.authorName === STATE.user.name); }
+function renderAuthArea(){
+  const area = document.getElementById('authArea');
+  if(STATE.user){
+    area.innerHTML = `<div class="user-chip" id="userChip" title="${t('profile.title')}">
+      <div class="avatar" style="background:${colorFor(STATE.user.name)}">${initials(STATE.user.name)}</div>
+      <span style="font-size:.82rem;font-weight:700;">${STATE.user.name.split(' ')[0]}</span>
+    </div>`;
+    document.getElementById('userChip').onclick = ()=> openProfileModal();
+  } else {
+    area.innerHTML = `<button class="btn btn-outline" id="loginBtn">${t('auth.google')}</button>`;
+    document.getElementById('loginBtn').onclick = ()=> openAuthModal();
+  }
+}
+function openAuthModal(){
+  document.getElementById('googleStep1').style.display='';
+  openModal('authOverlay');
+}
+function openProfileModal(){
+  renderProfileSection();
+  openModal('profileOverlay');
+}
+function renderProfileSection(){
+  const section = document.getElementById('profileSection');
+  const own = STATE.listings.filter(isOwnListing);
+  section.innerHTML = `
+    <div class="profile-bio">
+      <div class="avatar" style="background:${colorFor(STATE.user.name)}">${initials(STATE.user.name)}</div>
+      <div>
+        <b>${STATE.user.name}</b>
+        <div class="meta">${STATE.user.email || ''}</div>
+      </div>
+    </div>
+    <div>
+      <h3>${t('profile.myItems', {n: own.length})}</h3>
+    </div>
+  `;
+  if(own.length === 0){
+    section.innerHTML += `<div class="empty-state"><h3>${t('profile.noItems')}</h3><p>${t('profile.noItemsSub')}</p></div>`;
+    return;
+  }
+  const list = document.createElement('div');
+  list.className = 'profile-list';
+  own.sort((a,b)=>b.createdAt-a.createdAt).forEach(item=>{
+    const row = document.createElement('div');
+    row.className = 'profile-item';
+    row.innerHTML = `
+      <div>
+        <b>${localized(item.title)}</b>
+        <div class="meta">${t('cat.'+item.category)} · ${item.location || ''}</div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-ghost" type="button" data-action="edit" data-id="${item.id}">${t('sell.edit')}</button>
+        <button class="btn btn-outline" type="button" data-action="delete" data-id="${item.id}">${t('sell.delete')}</button>
+      </div>
+    `;
+    row.querySelector('[data-action="edit"]').onclick = ()=> editListing(item.id);
+    row.querySelector('[data-action="delete"]').onclick = ()=> deleteListing(item.id);
+    list.appendChild(row);
+  });
+  section.appendChild(list);
+}
+function editListing(id){
+  const listing = STATE.listings.find(l=>l.id===id);
+  if(!listing || !isOwnListing(listing)) return;
+  STATE.editingListingId = id;
+  openSellModal();
+  document.getElementById('itemTitle').value = localized(listing.title);
+  document.getElementById('itemCategory').value = listing.category;
+  document.getElementById('itemLocation').value = listing.location || '';
+  document.getElementById('itemDescription').value = localized(listing.description);
+  document.getElementById('isExchange').checked = listing.isExchange;
+  document.getElementById('itemPrice').value = listing.price || '';
+  togglePriceField();
+  STATE.pendingPhotos = listing.photo ? [listing.photo] : [];
+  renderPhotoPreview();
+  closeModal('profileOverlay');
+}
+async function deleteListing(id){
+  const listing = STATE.listings.find(l=>l.id===id);
+  if(!listing || !isOwnListing(listing)) return;
+  if(!confirm(t('sell.confirmDelete')+'?')) return;
+  await deleteListingFromSupabase(id);
+  STATE.listings = await fetchListingsFromSupabase();
+  renderFilterCats(); renderListings();
+  if(document.getElementById('profileOverlay').classList.contains('open')) renderProfileSection();
+  closeModal('detailOverlay');
+  showToast(t('sell.deleted'));
+}
+
+
+/* ================= SELL FLOW ================= */
+function requestSell(){
+  if(!STATE.user){
+    STATE._openSellAfterLogin = true;
+    showToast(t('sell.needLogin'));
+    openAuthModal();
+    return;
+  }
+  STATE.editingListingId = null;
+  openSellModal();
+}
+function openSellModal(){
+  document.getElementById('sellForm').reset();
+  STATE.pendingPhotos = [];
+  document.getElementById('photoPreview').innerHTML = '';
+  renderCategorySelect();
+  togglePriceField();
+  const titleEl = document.getElementById('sellOverlayTitle');
+  const submitBtn = document.getElementById('sellSubmitBtn');
+  if(titleEl){
+    titleEl.dataset.i18n = STATE.editingListingId ? 'sell.editTitle' : 'sell.title';
+    titleEl.textContent = t(titleEl.dataset.i18n);
+  }
+  if(submitBtn){
+    submitBtn.dataset.i18n = STATE.editingListingId ? 'sell.update' : 'sell.publish';
+    submitBtn.textContent = t(submitBtn.dataset.i18n);
+  }
+  openModal('sellOverlay');
+}
+function togglePriceField(){
+  const isExchange = document.getElementById('isExchange').checked;
+  document.getElementById('priceField').style.display = isExchange ? 'none' : '';
+}
+function fileToDataURL(file, maxW){
+  maxW = maxW || 640;
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const scale = Math.min(1, maxW/img.width);
+        const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+        const canvas = document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotoPreview(){
+  const wrap = document.getElementById('photoPreview');
+  wrap.innerHTML = '';
+  STATE.pendingPhotos.forEach((src,idx)=>{
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    thumb.innerHTML = `<img src="${src}"><button type="button">✕</button>`;
+    thumb.querySelector('button').onclick = ()=>{ STATE.pendingPhotos.splice(idx,1); renderPhotoPreview(); };
+    wrap.appendChild(thumb);
+  });
+}
+
+/* ================= TOAST ================= */
+function showToast(msg){
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  c.appendChild(el);
+  requestAnimationFrame(()=> el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); }, 2600);
+}
+
+/* ================= EVENTS ================= */
+function bindEvents(){
+  document.getElementById('langRu').onclick = ()=>{ STATE.lang='ru'; applyLang(); savePrefs(); };
+  document.getElementById('langKg').onclick = ()=>{ STATE.lang='kg'; applyLang(); savePrefs(); };
+  document.getElementById('themeToggle').onclick = ()=>{ STATE.theme = STATE.theme==='dark'?'light':'dark'; applyTheme(); savePrefs(); };
+
+  document.getElementById('sellBtn').onclick = requestSell;
+  document.getElementById('heroSellBtn').onclick = requestSell;
+  document.getElementById('heroBrowseBtn').onclick = ()=>{
+    document.querySelector('.market').scrollIntoView({behavior:'smooth'});
+    saveLastVisit();
+    updateNewItemsCount();
+  };
+
+  document.querySelectorAll('[data-close]').forEach(el=>{
+    el.onclick = ()=> closeModal(el.getAttribute('data-close'));
+  });
+  document.querySelectorAll('.overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target === ov) closeModal(ov.id); });
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){ document.querySelectorAll('.overlay.open').forEach(ov=>closeModal(ov.id)); }
+  });
+
+  document.getElementById('googleContinueBtn').onclick = ()=>{
+    if(!window.google?.accounts?.id){ showToast('Google Identity Services не загружен'); return; }
+    google.accounts.id.prompt();
+  };
+
+  document.getElementById('favoritesBtn').onclick = ()=>{ renderFavorites(); openModal('favoritesOverlay'); };
+  document.getElementById('exchangeToggleRow').addEventListener('change', togglePriceField);
+
+  document.getElementById('dropzone').onclick = ()=> document.getElementById('photoInput').click();
+  document.getElementById('photoInput').onchange = async (e)=>{
+    const files = Array.from(e.target.files).slice(0,4);
+    for(const f of files){
+      try{ const url = await fileToDataURL(f); STATE.pendingPhotos.push(url); }catch(err){}
+    }
+    renderPhotoPreview();
+    e.target.value = '';
+  };
+  const phoneInput = document.getElementById('itemLocation');
+  if(phoneInput){
+    phoneInput.addEventListener('input', ()=>{
+      const raw = phoneInput.value.replace(/\D/g, '');
+      let digits = raw;
+      if(digits.startsWith('996')) digits = digits.slice(3);
+      if(digits.length > 9) digits = digits.slice(0,9);
+      let formatted = '+996';
+      if(digits.length > 0) formatted += ' ' + digits.slice(0,3);
+      if(digits.length > 3) formatted += ' ' + digits.slice(3,6);
+      if(digits.length > 6) formatted += ' ' + digits.slice(6,9);
+      phoneInput.value = formatted;
+    });
+  }
+
+  document.getElementById('sellForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const title = document.getElementById('itemTitle').value.trim();
+    const category = document.getElementById('itemCategory').value;
+    const location = document.getElementById('itemLocation').value.trim();
+    const description = document.getElementById('itemDescription').value.trim();
+    const isExchange = document.getElementById('isExchange').checked;
+    const price = isExchange ? null : (parseFloat(document.getElementById('itemPrice').value) || 0);
+    if(!title) return;
+    if(!location){ showToast(t('sell.needPhoneNumber')); return; }
+    if(STATE.pendingPhotos.length === 0){ showToast(t('sell.needPhoto')); return; }
+    const listingData = {
+      id: STATE.editingListingId || (window.crypto?.randomUUID ? window.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      })),
+      title: { ru: title, kg: title },
+      description: { ru: description, kg: description },
+      category, price, isExchange, location,
+      phone: location,
+      photo: STATE.pendingPhotos[0], emoji: null,
+      authorName: STATE.user.name, authorEmail: STATE.user.email, createdAt: STATE.editingListingId ? STATE.listings.find(l=>l.id===STATE.editingListingId)?.createdAt : Date.now()
+    };
+    const saved = await saveListingToSupabase(listingData);
+    if(!saved){
+      showToast('Не удалось сохранить объявление. Попробуйте снова.');
+      return;
+    }
+    STATE.listings = await fetchListingsFromSupabase();
+    STATE.editingListingId = null;
+    closeModal('sellOverlay');
+    showToast(t('sell.published'));
+    STATE.filter = {category:null, exchangeOnly:false, query:''};
+    document.getElementById('searchInput').value='';
+    document.getElementById('exchangeOnly').checked=false;
+    renderFilterCats(); renderListings();
+  });
+
+  document.getElementById('exchangeOnly').onchange = (e)=>{ STATE.filter.exchangeOnly = e.target.checked; renderListings(); };
+  document.getElementById('resetFilters').onclick = ()=>{
+    STATE.filter = {category:null, exchangeOnly:false, query:''};
+    document.getElementById('searchInput').value='';
+    document.getElementById('exchangeOnly').checked=false;
+    renderFilterCats(); renderListings();
+  };
+  let searchDebounce;
+  document.getElementById('searchInput').oninput = (e)=>{
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(()=>{ STATE.filter.query = e.target.value.trim(); renderListings(); }, 200);
+  };
+}
+
+init();
+</script>
+</body>
+</html>
