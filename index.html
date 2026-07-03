@@ -438,7 +438,7 @@
   </svg>
   <div class="wrap hero-inner">
     <div>
-      <div class="eyebrow" data-i18n="hero.eyebrow">Жылкелди айылы</div>
+      <div class="eyebrow" data-i18n="hero.eyebrow">Жылкелди</div>
       <h1 data-i18n="hero.title">Продавай. Меняй. Находи нужное рядом.</h1>
       <p class="lead" data-i18n="hero.lead">SMART SHOPPING — место, где соседи меняются и продают вещи друг другу. Без посредников и комиссий: сфотографировал, выложил, договорился.</p>
       <div class="hero-cta">
@@ -510,11 +510,8 @@
     <h2 data-i18n="auth.title">Войти, чтобы продолжить</h2>
     <p class="sub" data-i18n="auth.sub">Регистрация только через Google-аккаунт — быстро и без паролей.</p>
     <div id="googleStep1">
-      <button class="google-row" id="googleContinueBtn">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.2-2 13.8-5.4l-6.4-5.3C29.3 34.9 26.8 36 24 36c-5.4 0-9.9-3.4-11.5-8.2l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 2.9-3.1 5.2-5.9 6.7l6.4 5.3C39.8 37.1 44 31.4 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
-        <span data-i18n="auth.google">Продолжить с Google</span>
-      </button>
-      <p class="auth-note" data-i18n="auth.note">Для входа используйте кнопку выше. Вставьте свой Google OAuth Client ID в код и запустите страницу из веб-сервера.</p>
+      <div class="google-row" id="googleContinueBtn"></div>
+      <p class="auth-note" data-i18n="auth.note">Для входа используйте кнопку выше. Откройте сайт по HTTPS и убедитесь, что домен добавлен в Authorized JavaScript origins.</p>
     </div>
   </div>
 </div>
@@ -591,7 +588,7 @@
 const I18N = {
   ru: {
     "nav.sell":"Продать",
-    "hero.eyebrow":"Село Жылкелди",
+    "hero.eyebrow":"Жылкелди",
     "hero.title":"Продавай. Меняй. Находи нужное рядом.",
     "hero.lead":"SMART SHOPPING — место, где соседи меняются и продают вещи друг другу. Без посредников и комиссий: сфотографировал, выложил, договорился.",
     "hero.cta.sell":"Разместить объявление",
@@ -667,7 +664,7 @@ const I18N = {
   },
   kg: {
     "nav.sell":"Сатуу",
-    "hero.eyebrow":"Жылкелди айылы",
+    "hero.eyebrow":"Жылкелди",
     "hero.title":"Сат. Алмаштыр. Керектүүнү жакын жерден тап.",
     "hero.lead":"SMART SHOPPING — коңшулар буюмдарды бири-бирине сатып, алмаштырган жер. Ортомчусуз жана комиссиясыз: сүрөткө тартып, жарыялап, макулдашасың.",
     "hero.cta.sell":"Жарыя жайгаштыруу",
@@ -769,7 +766,33 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const GOOGLE_CLIENT_ID = '952157430601-3sfm0uml1i0uahgi42eutr4l65q4jofn.apps.googleusercontent.com';
 function decodeJwtResponse(token){ const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c=> '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')); return JSON.parse(jsonPayload); }
-function initGoogleIdentity(){ if(!window.google?.accounts?.id) return; window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse, ux_mode: 'popup' }); }
+function isGoogleAuthSupported(){
+  const host = window.location.hostname;
+  const isLocalhost = ['localhost','127.0.0.1','::1'].includes(host);
+  return window.isSecureContext || location.protocol === 'https:' || isLocalhost;
+}
+function initGoogleIdentity(){
+  if(!window.google?.accounts?.id) return;
+  window.google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredentialResponse,
+    ux_mode: 'popup',
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+  const authEl = document.getElementById('googleContinueBtn');
+  if(authEl){
+    authEl.innerHTML = '';
+    window.google.accounts.id.renderButton(authEl, {
+      type: 'standard',
+      theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'filled_black' : 'outline',
+      size: 'large',
+      shape: 'rectangular',
+      width: '100%',
+      text: 'signin_with',
+    });
+  }
+}
 function waitForGoogleInit(){ if(window.google?.accounts?.id){ initGoogleIdentity(); } else { setTimeout(waitForGoogleInit, 200); } }
 async function handleCredentialResponse(response){
   try{
@@ -1465,7 +1488,18 @@ function bindEvents(){
 
   document.getElementById('googleContinueBtn').onclick = ()=>{
     if(!window.google?.accounts?.id){ showToast('Google Identity Services не загружен'); return; }
-    google.accounts.id.prompt();
+    if(!isGoogleAuthSupported()){
+      showToast('Google вход работает только по HTTPS или localhost. Откройте страницу по безопасному адресу.');
+      return;
+    }
+    window.google.accounts.id.prompt((notification)=>{
+      const notDisplayed = notification?.isNotDisplayed?.();
+      const skipped = notification?.isSkippedMoment?.();
+      if(notDisplayed || skipped){
+        console.warn('Google prompt was blocked', notification);
+        showToast('Google не открыл окно входа. Возможно, браузер заблокировал всплывающее окно или отключены cookies.');
+      }
+    });
   };
   document.getElementById('exchangeToggleRow').addEventListener('change', togglePriceField);
 
