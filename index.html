@@ -119,6 +119,40 @@
     font-weight:800; font-size:.75rem; color:#fff; flex-shrink:0;
   }
   .avatar.lg{width:52px; height:52px; font-size:1.1rem;}
+  .fade-in{opacity:0; transform: translateY(14px); animation:fadeInUp .42s ease forwards;}
+  .fade-in-slow{animation-duration:.55s;}
+  .card{opacity:0;}
+  .card.fade-in{opacity:1;}
+  .filter-cats button{transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;}
+  .filter-cats button:hover{transform:translateY(-1px); box-shadow:0 12px 24px rgba(33,29,23,.06);}
+  .filter-cats button.active{background:var(--accent-brick); color:#fff;}
+  .btn, .icon-btn{transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;}
+  .btn:hover, .icon-btn:hover{transform:translateY(-1px);}
+  .skeleton-card{position:relative; overflow:hidden; border-radius:18px; background:var(--paper-alt); min-height:210px;}
+  .skeleton-card::before{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.45), rgba(255,255,255,0)); transform:translateX(-100%); animation:shimmer 1.4s ease-in-out infinite;}
+  .skeleton-line{position:relative; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.45); margin-bottom:12px;}
+  .skeleton-line::before{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0)); transform:translateX(-100%); animation:shimmer 1.4s ease-in-out infinite;}
+  .skeleton-block{background:rgba(255,255,255,.55); border-radius:16px;}
+  .modal-skeleton{display:flex; flex-direction:column; gap:16px;}
+  .modal-skeleton .skeleton-row{display:flex; gap:12px; align-items:center;}
+  .modal-skeleton .skeleton-circle{width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.55);}
+  .modal-skeleton .skeleton-line{height:16px; width:100%;}
+  .modal-skeleton .skeleton-line.short{width:45%;}
+  .detail-price, .card-bottom{opacity:0; transition:opacity .3s ease .08s;}
+  @keyframes shimmer{100%{transform:translateX(100%);}}
+  @keyframes fadeInUp{to{opacity:1; transform:translateY(0);}}
+  body.is-loading .hero,
+  body.is-loading .market-inner,
+  body.is-loading footer,
+  body.is-loading .site-header{filter:blur(5px); opacity:.8; transition:filter .3s ease, opacity .3s ease;}
+  body.is-loading .nav-controls{pointer-events:none;}
+  body.is-loading .hero .hero-visual svg,
+  body.is-loading .hero-visual,
+  body.is-loading .card,
+  body.is-loading .filters,
+  body.is-loading .search-box{filter:blur(1px);}
+  .mobile-menu-toggle{display:none; width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--card-bg); color:var(--ink); align-items:center; justify-content:center; cursor:pointer;}
+  .mobile-menu-toggle:hover{border-color:var(--accent-marigold);}
 
   /* ---------- Hero ---------- */
   .hero{position:relative; overflow:hidden; padding:64px 0 40px;}
@@ -310,6 +344,49 @@
     .photo-preview{gap:12px;}
     .photo-preview .thumb{width:80px; height:80px;}
   }
+  /* Additional responsiveness for tablets and small phones */
+  @media (max-width:900px){
+    .wrap{max-width:940px; padding:0 20px;}
+    .header-inner{padding:10px 0;}
+    .brand{font-size:1.12rem;}
+    .listings-grid{grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:16px;}
+    .card-photo{height:160px;}
+    .hero-visual{height:220px;}
+  }
+  @media (max-width:420px){
+    .wrap{padding:0 12px;}
+    .header-inner{flex-wrap:wrap; align-items:center; gap:8px; padding:10px 0; position:relative;}
+    .header-spacer{flex-basis:100%; height:0;}
+    .brand span.brand-text{display:none;}
+    .mobile-menu-toggle{display:flex;}
+    .nav-controls{display:none; position:absolute; top:100%; left:0; width:100%; flex-direction:column; align-items:stretch; gap:12px; background:var(--paper); border-top:1px solid var(--line); padding:16px 12px; box-shadow:0 12px 24px rgba(0,0,0,0.08); z-index:20;}
+    .site-header.open .nav-controls{display:flex;}
+    .nav-controls .lang-switch{order:0; width:100%;}
+    .nav-controls .lang-switch button{flex:1;}
+    .nav-controls .icon-btn, .nav-controls .btn, .nav-controls .user-chip{width:100%; justify-content:center;}
+    .nav-controls .icon-btn{border-radius:14px;}
+    .nav-controls .btn{border-radius:14px;}
+    .nav-controls .user-chip{border-radius:14px; justify-content:center;}
+    .nav-controls .user-chip span{display:none;}
+    .nav-controls .user-chip .avatar{margin:0 auto;}
+    .btn{padding:10px 14px; font-size:.88rem;}
+    .hero{padding:26px 0 18px;}
+    h1{font-size:1.28rem;}
+    .lead{font-size:.98rem;}
+    .hero-cta{flex-direction:column; align-items:stretch; gap:10px;}
+    .hero-cta .btn{width:100%;}
+    .listings-grid{grid-template-columns:1fr; gap:12px;}
+    .card{display:flex; gap:12px; padding:10px; align-items:flex-start;}
+    .card-photo{width:110px; height:110px; flex:0 0 110px; border-radius:12px;}
+    .card-body{padding:6px 0 6px 0;}
+    .card-title{font-size:.95rem;}
+    .card-price{font-size:.95rem;}
+    .card-meta{font-size:.78rem;}
+    .modal{padding:18px; margin:0 8px; border-radius:14px;}
+    .modal .modal-actions{display:flex; flex-direction:column; gap:8px;}
+    .modal .modal-actions .btn{width:100%;}
+    .photo-preview .thumb{width:64px; height:64px}
+  }
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
@@ -325,8 +402,11 @@
       </svg>
       <span class="brand-text">SMART SHOPPING</span>
     </div>
+    <button class="icon-btn mobile-menu-toggle" id="mobileMenuToggle" aria-label="Меню">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
     <div class="header-spacer"></div>
-    <div class="nav-controls">
+    <div class="nav-controls" id="headerNavControls">
       <div class="lang-switch" role="group">
         <button data-lang="ru" id="langRu">RU</button>
         <button data-lang="kg" id="langKg">KG</button>
@@ -806,6 +886,21 @@ function updateNewItemsCount(){
     heroBtn.classList.toggle('new-badge', STATE.newItemsCount > 0);
   }
 }
+function renderListingsSkeleton(count){
+  const grid = document.getElementById('listingsGrid');
+  if(!grid) return;
+  grid.innerHTML = Array.from({length:count}).map(()=>`
+    <div class="skeleton-card">
+      <div class="skeleton-block" style="height:140px; border-radius:18px 18px 0 0;"></div>
+      <div style="padding:16px; display:flex; flex-direction:column; gap:10px;">
+        <div class="skeleton-line" style="height:18px; width:70%;"></div>
+        <div class="skeleton-line" style="height:16px; width:50%;"></div>
+        <div class="skeleton-line" style="height:14px; width:90%;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
 function renderFavorites(){
   const wrap = document.getElementById('favoritesContent');
   if(!wrap) return;
@@ -961,6 +1056,8 @@ async function init(){
   loadFavorites();
   loadLastVisit();
 
+  document.body.classList.add('is-loading');
+  renderListingsSkeleton(6);
   const listings = await fetchListingsFromSupabase();
   STATE.listings = listings || [];
 
@@ -970,6 +1067,7 @@ async function init(){
   updateNewItemsCount();
   bindEvents();
   waitForGoogleInit();
+  document.body.classList.remove('is-loading');
 }
 
 /* ================= THEME / LANG ================= */
@@ -1018,10 +1116,11 @@ async function savePrefs(){ await storageSet('almash_prefs', {lang:STATE.lang, t
 function renderFilterCats(){
   const wrap = document.getElementById('filterCats');
   wrap.innerHTML = '';
-  CATEGORIES.forEach(c=>{
+  CATEGORIES.forEach((c, idx)=>{
     const count = STATE.listings.filter(l=>l.category===c.id).length;
     const btn = document.createElement('button');
-    btn.className = STATE.filter.category===c.id ? 'active' : '';
+    btn.className = STATE.filter.category===c.id ? 'active fade-in' : 'fade-in';
+    btn.style.animationDelay = `${idx * 40}ms`;
     btn.innerHTML = `<span>${c.icon} ${t('cat.'+c.id)}</span><span class="mono">${count}</span>`;
     btn.onclick = ()=>{ STATE.filter.category = (STATE.filter.category===c.id? null : c.id); renderFilterCats(); renderListings(); };
     wrap.appendChild(btn);
@@ -1077,9 +1176,10 @@ function renderListings(){
     </div>`;
     return;
   }
-  filtered.forEach(l=>{
+  filtered.forEach((l, idx)=>{
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card fade-in';
+    card.style.animationDelay = `${idx * 45}ms`;
     const cat = CATEGORIES.find(c=>c.id===l.category);
     card.innerHTML = `
       <div class="card-photo" style="background:${l.photo ? 'none' : 'var(--paper-alt)'};">
@@ -1090,60 +1190,74 @@ function renderListings(){
         <div class="card-price">${l.isExchange ? '⇄ ' + t('card.exchange') : (l.price ? formatPrice(l.price) : t('card.free'))}</div>
         <div class="card-title">${localized(l.title)}</div>
         <div class="card-meta"><span>${l.location||''}</span><span>${relativeTime(l.createdAt)}</span></div>
+        <div class="card-bottom" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; opacity:0;">
+          <span class="mono" style="font-size:.78rem; color:var(--ink-soft);">${l.authorName ? l.authorName.split(' ')[0] : ''}</span>
+          <button class="btn btn-outline" type="button" style="padding:8px 12px; font-size:.78rem;">${t('detail.contact')}</button>
+        </div>
       </div>`;
     card.onclick = ()=> openDetail(l);
     grid.appendChild(card);
+    setTimeout(()=>{ const bottom = card.querySelector('.card-bottom'); if(bottom) bottom.style.opacity='1'; }, 200 + idx*45);
   });
 }
 
 /* ================= DETAIL MODAL ================= */
 function openDetail(l){
-  const cat = CATEGORIES.find(c=>c.id===l.category);
   const content = document.getElementById('detailModalContent');
-  const phone = l.location || '';
-  const waUrl = formatWhatsAppUrl(phone, `${t('detail.contact')} — ${localized(l.title)}`);
   content.innerHTML = `
-    <button class="modal-close" data-close="detailOverlay">✕</button>
-    <div class="detail-photo" style="background:${l.photo?'none':'var(--paper-alt)'}; position:relative;">
-      ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
-    </div>
-    <div class="eyebrow">${cat ? cat.icon+' '+t('cat.'+cat.id) : ''}</div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-    <h2 style="margin: 0;">${localized(l.title)}</h2>
-    <button id="detailFavoriteBtn" title="${isFavorite(l.id) ? t('favorites.remove') : t('favorites.add')}" style="background: none; border: none; cursor: pointer; padding: 8px; color: ${isFavorite(l.id) ? '#ff4b4b' : '#888'}; transition: color 0.2s;">
-        <svg viewBox="0 0 24 24" fill="${isFavorite(l.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-    </button>
-    </div>
-    <div class="detail-price">${l.isExchange ? '⇄ '+t('card.exchange') : (l.price?formatPrice(l.price):t('card.free'))}</div>
-    <p>${localized(l.description)}</p>
-    ${l.isExchange ? `<p class="sub">${t('detail.exchangeNote')}</p>` : ''}
-    <div class="detail-seller">
-      <div class="avatar" style="background:${colorFor(l.authorName||'?')}">${initials(l.authorName||'?')}</div>
-      <div><div style="font-size:.78rem;color:var(--ink-soft);">${t('detail.postedBy')}</div><b>${l.authorName||''}</b></div>
-    </div>
-    <p class="sub">📞 ${phone || t('detail.noPhone')}</p>
-    <p class="sub">${relativeTime(l.createdAt)}</p>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;" id="contactBtn">${t('detail.contact')}</button>
-  `;
-  const favBtn = content.querySelector('#detailFavoriteBtn');
-  if(favBtn){
-    favBtn.onclick = ()=>{
-      toggleFavorite(l.id);
-      const active = isFavorite(l.id);
-favBtn.title = active ? t('favorites.remove') : t('favorites.add');
-const svg = favBtn.querySelector('svg');
-if (svg) {
-    svg.setAttribute('fill', active ? 'currentColor' : 'none');
-    favBtn.style.color = active ? '#ff4b4b' : '#888';
-}
-    };
-  }
-  content.querySelector('#contactBtn').onclick = ()=>{
-    if(waUrl){ window.open(waUrl, '_blank'); }
-    else { showToast(t('detail.missingPhone')); }
-  };
-  content.querySelector('[data-close]').onclick = ()=> closeModal('detailOverlay');
+    <div class="modal-skeleton">
+      <div style="display:flex; justify-content:space-between; align-items:center;"><div class="skeleton-line" style="height:24px;width:50%;"></div><div class="skeleton-circle"></div></div>
+      <div class="skeleton-block" style="height:180px;"></div>
+      <div class="skeleton-line" style="height:20px;width:70%;"></div>
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line" style="height:120px;"></div>
+      <div class="skeleton-row"><div class="skeleton-circle"></div><div class="skeleton-line" style="height:18px;width:50%;"></div></div>
+      <div class="skeleton-line short"></div>
+    </div>`;
   openModal('detailOverlay');
+  setTimeout(()=>{
+    const cat = CATEGORIES.find(c=>c.id===l.category);
+    const phone = l.location || '';
+    const waUrl = formatWhatsAppUrl(phone, `${t('detail.contact')} — ${localized(l.title)}`);
+    content.innerHTML = `
+      <button class="modal-close" data-close="detailOverlay">✕</button>
+      <div class="detail-photo" style="background:${l.photo?'none':'var(--paper-alt)'}; position:relative;">
+        ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
+      </div>
+      <div class="eyebrow">${cat ? cat.icon+' '+t('cat.'+cat.id) : ''}</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap:12px;">
+        <h2 style="margin: 0;">${localized(l.title)}</h2>
+        <button id="detailFavoriteBtn" title="${isFavorite(l.id) ? t('favorites.remove') : t('favorites.add')}" style="background: none; border: none; cursor: pointer; padding: 8px; color: ${isFavorite(l.id) ? '#ff4b4b' : '#888'}; transition: color 0.2s;">
+          <svg viewBox="0 0 24 24" fill="${isFavorite(l.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
+      </div>
+      <div class="detail-price">${l.isExchange ? '⇄ '+t('card.exchange') : (l.price?formatPrice(l.price):t('card.free'))}</div>
+      <p>${localized(l.description)}</p>
+      ${l.isExchange ? `<p class="sub">${t('detail.exchangeNote')}</p>` : ''}
+      <div class="detail-seller">
+        <div class="avatar" style="background:${colorFor(l.authorName||'?')}">${initials(l.authorName||'?')}</div>
+        <div><div style="font-size:.78rem;color:var(--ink-soft);">${t('detail.postedBy')}</div><b>${l.authorName||''}</b></div>
+      </div>
+      <p class="sub">📞 ${phone || t('detail.noPhone')}</p>
+      <p class="sub">${relativeTime(l.createdAt)}</p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" id="contactBtn">${t('detail.contact')}</button>
+    `;
+    const favBtn = content.querySelector('#detailFavoriteBtn');
+    if(favBtn){
+      favBtn.onclick = ()=>{
+        toggleFavorite(l.id);
+        const active = isFavorite(l.id);
+        favBtn.title = active ? t('favorites.remove') : t('favorites.add');
+        const svg = favBtn.querySelector('svg');
+        if(svg){ svg.setAttribute('fill', active ? 'currentColor' : 'none'); favBtn.style.color = active ? '#ff4b4b' : '#888'; }
+      };
+    }
+    content.querySelector('#contactBtn').onclick = ()=>{
+      if(waUrl){ window.open(waUrl, '_blank'); }
+      else { showToast(t('detail.missingPhone')); }
+    };
+    content.querySelector('[data-close]').onclick = ()=> closeModal('detailOverlay');
+  }, 120);
 }
 
 /* ================= MODALS ================= */
@@ -1170,8 +1284,18 @@ function openAuthModal(){
   openModal('authOverlay');
 }
 function openProfileModal(){
-  renderProfileSection();
+  const section = document.getElementById('profileSection');
+  section.innerHTML = `
+    <div class="modal-skeleton">
+      <div class="skeleton-row"><div class="skeleton-circle"></div><div class="skeleton-line" style="height:18px;width:50%;"></div></div>
+      <div class="skeleton-line" style="height:18px;width:40%;"></div>
+      <div class="skeleton-block" style="height:18px;width:60%;"></div>
+      <div class="skeleton-block" style="height:16px;width:80%;"></div>
+      <div class="skeleton-block" style="height:14px;width:90%;"></div>
+      <div class="skeleton-block" style="height:16px;width:100%;"></div>
+    </div>`;
   openModal('profileOverlay');
+  setTimeout(()=> renderProfileSection(), 120);
 }
 function renderProfileSection(){
   const section = document.getElementById('profileSection');
@@ -1325,12 +1449,25 @@ function bindEvents(){
   document.getElementById('langKg').onclick = ()=>{ STATE.lang='kg'; applyLang(); savePrefs(); };
   document.getElementById('themeToggle').onclick = ()=>{ STATE.theme = STATE.theme==='dark'?'light':'dark'; applyTheme(); savePrefs(); };
 
-  document.getElementById('sellBtn').onclick = requestSell;
-  document.getElementById('heroSellBtn').onclick = requestSell;
+  const header = document.querySelector('.site-header');
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const mobileNav = document.getElementById('headerNavControls');
+  function closeMobileMenu(){ if(header) header.classList.remove('open'); }
+  if(mobileMenuToggle){ mobileMenuToggle.onclick = ()=> header?.classList.toggle('open'); }
+  if(mobileNav){
+    mobileNav.addEventListener('click', e=>{
+      if(header?.classList.contains('open') && !e.target.closest('#mobileMenuToggle')){
+        closeMobileMenu();
+      }
+    });
+  }
+  document.getElementById('sellBtn').onclick = ()=>{ closeMobileMenu(); requestSell(); };
+  document.getElementById('heroSellBtn').onclick = ()=>{ closeMobileMenu(); requestSell(); };
   document.getElementById('heroBrowseBtn').onclick = ()=>{
     document.querySelector('.market').scrollIntoView({behavior:'smooth'});
     saveLastVisit();
     updateNewItemsCount();
+    closeMobileMenu();
   };
 
   document.querySelectorAll('[data-close]').forEach(el=>{
