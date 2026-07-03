@@ -56,6 +56,10 @@
   a{color:inherit;}
   button{font-family:inherit;}
   img{max-width:100%;display:block;}
+  a, button, input, select, textarea, label, .btn, .icon-btn {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+  }
   ::selection{background:var(--accent-marigold); color:#211D17;}
   :focus-visible{outline:2px solid var(--accent-marigold); outline-offset:2px;}
   @media (prefers-reduced-motion: reduce){
@@ -654,8 +658,15 @@ const I18N = {
     "detail.missingPhone":"Телефон продавца не задан или написан неверно",
     "auth.loggedInAs":"Вы вошли как",
     "auth.logout":"Выйти",
+    "auth.signedOut":"Вы вышли",
     "profile.title":"Профиль",
     "profile.sub":"Просмотрите свои данные и управляйте своими объявлениями.",
+    "profile.nameLabel":"Ваше имя",
+    "profile.nameHint":"Только буквы кириллицы и пробелы",
+    "profile.saveName":"Сохранить",
+    "profile.nameSaved":"Имя сохранено",
+    "profile.nameRequired":"Введите имя",
+    "profile.nameError":"Имя может содержать только буквы и пробелы",
     "profile.myItems":"Моих объявлений: {n}",
     "profile.noItems":"У вас ещё нет объявлений",
     "profile.noItemsSub":"Создайте своё первое объявление и оно появится здесь.",
@@ -728,8 +739,15 @@ const I18N = {
     "detail.missingPhone":"Сатууучунун телефону белгиленген эмес, же туура эмес жазылган",
     "auth.loggedInAs":"Сиз кирдиңиз",
     "auth.logout":"Чыгуу",
+    "auth.signedOut":"Сиз чыктыңыз",
     "profile.title":"Профиль",
     "profile.sub":"Өзүңүздүн маалыматтарды карап чыгып, жарыяларды башкарсаңыз болот.",
+    "profile.nameLabel":"Ысым",
+    "profile.nameHint":"Кириллица жана боштук гана колдонсоңуз болот",
+    "profile.saveName":"Сактоо",
+    "profile.nameSaved":"Ысым сакталды",
+    "profile.nameRequired":"Ысымды киргизиңиз",
+    "profile.nameError":"Ысымда туура эмес символдор бар",
     "profile.myItems":"Менин жарыяларым: {n}",
     "profile.noItems":"Сизде азырынча жарыя жок",
     "profile.noItemsSub":"Биринчи жарыяңызды түзүп, ал бул жерге көрсөтүлөт.",
@@ -836,6 +854,49 @@ async function storageSet(key, value, shared){
       window.localStorage.setItem(key, JSON.stringify(value));
     }
   }catch(e){ console.error('storage set failed', e); }
+}
+function escapeHtml(str){
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function validateProfileName(name){
+  return /^[А-ЯЁа-яёӘәҒғҚқҢңӨөҮүҺһІі\s]+$/.test(name);
+}
+async function saveProfileName(){
+  const input = document.getElementById('profileNameInput');
+  if(!input) return;
+  const name = input.value.trim().replace(/\s+/g, ' ');
+  if(!name){ showToast(t('profile.nameRequired')); return; }
+  if(!validateProfileName(name)){ showToast(t('profile.nameError')); return; }
+  const previousName = STATE.user.name;
+  STATE.user.name = name;
+  await syncProfileToSupabase(STATE.user);
+  await storageSet('almash_profile', STATE.user, false);
+  STATE.listings = STATE.listings.map(item => {
+    if(item.authorEmail === STATE.user.email || item.authorName === previousName){
+      return {...item, authorName: name};
+    }
+    return item;
+  });
+  renderAuthArea();
+  renderProfileSection();
+  renderListings();
+  showToast(t('profile.nameSaved'));
+}
+function signOutGoogle(){
+  if(window.google?.accounts?.id?.disableAutoSelect){
+    window.google.accounts.id.disableAutoSelect();
+  }
+  STATE.user = null;
+  localStorage.removeItem('almash_profile');
+  closeModal('profileOverlay');
+  renderAuthArea();
+  renderListings();
+  showToast(t('auth.signedOut'));
 }
 function loadFavorites(){
   const saved = localStorage.getItem('almash_favorites');
@@ -1300,18 +1361,36 @@ function openProfileModal(){
 function renderProfileSection(){
   const section = document.getElementById('profileSection');
   const own = STATE.listings.filter(isOwnListing);
+  const safeName = escapeHtml(STATE.user.name || '');
   section.innerHTML = `
     <div class="profile-bio">
       <div class="avatar" style="background:${colorFor(STATE.user.name)}">${initials(STATE.user.name)}</div>
       <div>
-        <b>${STATE.user.name}</b>
+        <b>${safeName}</b>
         <div class="meta">${STATE.user.email || ''}</div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="profileNameInput">${t('profile.nameLabel')}</label>
+      <input id="profileNameInput" type="text" value="${safeName}" autocomplete="name">
+      <div class="meta" style="margin-top:6px;">${t('profile.nameHint')}</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+        <button class="btn btn-primary" type="button" id="saveProfileNameBtn">${t('profile.saveName')}</button>
+        <button class="btn btn-outline" type="button" id="signOutBtn">${t('auth.logout')}</button>
       </div>
     </div>
     <div>
       <h3>${t('profile.myItems', {n: own.length})}</h3>
     </div>
   `;
+  document.getElementById('saveProfileNameBtn')?.addEventListener('click', saveProfileName);
+  document.getElementById('signOutBtn')?.addEventListener('click', signOutGoogle);
+  document.getElementById('profileNameInput')?.addEventListener('keydown', (event)=>{
+    if(event.key === 'Enter'){
+      event.preventDefault();
+      saveProfileName();
+    }
+  });
   if(own.length === 0){
     section.innerHTML += `<div class="empty-state"><h3>${t('profile.noItems')}</h3><p>${t('profile.noItemsSub')}</p></div>`;
     return;
