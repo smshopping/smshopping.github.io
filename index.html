@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5PGHN66VVS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-5PGHN66VVS');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMART SHOPPING</title>
@@ -65,7 +58,6 @@
   img{max-width:100%;display:block;}
   a, button, input, select, textarea, label, .btn, .icon-btn, .mobile-menu-toggle, .modal-close, .filter-cats button, .nav-controls button {
     -webkit-tap-highlight-color: transparent;
-    tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     touch-action: manipulation;
   }
@@ -424,10 +416,6 @@
         <button data-lang="ru" id="langRu">RU</button>
         <button data-lang="kg" id="langKg">KG</button>
       </div>
-      <button class="icon-btn" id="favoritesBtn" title="Избранное" aria-label="Избранное">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.5-1.5-4-1.5-5.5 0L12 7.9 8.7 4.6c-1.5-1.5-4-1.5-5.5 0-1.6 1.6-1.6 4.1 0 5.7l3.1 3.1L12 21l5.7-7.6 3.1-3.1c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
-        <span class="icon-badge" id="favoritesBadge"></span>
-      </button>
       <button class="icon-btn" id="themeToggle" title="Тема" aria-label="Тема">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></svg>
       </button>
@@ -584,16 +572,6 @@
   </div>
 </div>
 
-<!-- FAVORITES MODAL -->
-<div class="overlay" id="favoritesOverlay">
-  <div class="modal wide">
-    <button class="modal-close" data-close="favoritesOverlay">✕</button>
-    <h2 data-i18n="favorites.title">Избранное</h2>
-    <p class="sub" data-i18n="favorites.sub">Сохранённые товары, которые вы отметили.</p>
-    <div id="favoritesContent"></div>
-  </div>
-</div>
-
 <!-- DETAIL MODAL -->
 <div class="overlay" id="detailOverlay">
   <div class="modal wide" id="detailModalContent"></div>
@@ -651,12 +629,6 @@ const I18N = {
     "sell.published":"Объявление опубликовано!",
     "sell.needPhoneNumber":"Укажите телефон продавца",
     "sell.needPhoto":"Прикрепите хотя бы одно фото",
-    "favorites.title":"Избранное",
-    "favorites.sub":"Сохранённые товары, которые вы отметили.",
-    "favorites.add":"Добавить в избранное",
-    "favorites.remove":"Удалить из избранного",
-    "favorites.emptyTitle":"Нет избранных товаров",
-    "favorites.emptySub":"Отметьте товар сердечком, и он появится здесь.",
     "card.exchange":"Обмен",
     "card.free":"Бесплатно",
     "detail.contact":"Написать продавцу",
@@ -732,12 +704,6 @@ const I18N = {
     "sell.needLogin":"Алгач Google аркылуу кириңиз",
     "sell.published":"Жарыя жарыяланды!",
     "sell.needPhoto":"Жок дегенде бир сүрөт тиркеңиз",
-    "favorites.title":"Тандалгандар",
-    "favorites.sub":"Сакталган товарларды бул жерде көрө аласыз.",
-    "favorites.add":"Тандалгандар кошуу",
-    "favorites.remove":"Тандалгандардан алып салуу",
-    "favorites.emptyTitle":"Тандалгандар жок",
-    "favorites.emptySub":"Жүрөктү басып, товарды сактаңыз.",
     "card.exchange":"Алмашуу",
     "card.free":"Акысыз",
     "detail.contact":"Сатуучуга жазуу",
@@ -821,13 +787,6 @@ async function completeLogin(user){
 
 const SEED_LISTINGS = [
   {title:{ru:"Горный велосипед Trek",kg:"Trek тоо велосипеди"}, description:{ru:"Почти новый, катались всего сезон. Все передачи работают исправно.",kg:"Дээрлик жаңы, бир гана сезон унаа тебилди. Бардык тайманалар жакшы иштейт."}, category:"transport", price:8500, isExchange:false, location:"Джал", photo:null, emoji:"🚲", author:"Данияр Токтогулов"},
-  {title:{ru:"Акустическая гитара Yamaha",kg:"Yamaha акустикалык гитарасы"}, description:{ru:"Отдам в хорошие руки, готов обменять на синтезатор или MIDI-клавиатуру.",kg:"Жакшы колго берем, синтезатор же MIDI-клавиатурага алмашууга даярмын."}, category:"other", price:null, isExchange:true, location:"Восток-5", photo:null, emoji:"🎸", author:"Айбек Осмонов"},
-  {title:{ru:"Кроссовки Nike Air, 42 размер",kg:"Nike Air кроссовкалары, 42-өлчөм"}, description:{ru:"Носили пару раз, коробка в комплекте.",kg:"Бир нече жолу гана кийилген, кутусу менен."}, category:"clothing", price:3200, isExchange:false, location:"Ак-Босого", photo:null, emoji:"👟", author:"Салтанат Жумабекова"},
-  {title:{ru:"Диван раскладной",kg:"Ачылма диван"}, description:{ru:"Удобный, есть ящик для белья. Самовывоз.",kg:"Ыңгайлуу, кийим салгыч жашиги бар. Өзү алып кетүү."}, category:"furniture", price:12000, isExchange:false, location:"Аламедин базары", photo:null, emoji:"🛋️", author:"Нурия Сатыбалдиева"},
-  {title:{ru:"Фотоаппарат Canon EOS 600D",kg:"Canon EOS 600D фотоаппараты"}, description:{ru:"С объективом 18-55мм, сумка в подарок.",kg:"18-55мм объектив менен, сумка белекке."}, category:"electronics", price:15000, isExchange:false, location:"Асанбай", photo:null, emoji:"📷", author:"Данияр Токтогулов"},
-  {title:{ru:"Книги по программированию",kg:"Программалоо боюнча китептер"}, description:{ru:"Комплект из 5 книг, меняю на художественную литературу.",kg:"5 китептен турган топтом, көркөм адабиятка алмашам."}, category:"books", price:null, isExchange:true, location:"6 мкр", photo:null, emoji:"📚", author:"Салтанат Жумабекова"},
-  {title:{ru:"Часы Casio, винтаж",kg:"Casio сааты, винтаж"}, description:{ru:"Рабочее состояние, батарейка новая.",kg:"Иштеп турат, батарейкасы жаңы."}, category:"other", price:1800, isExchange:false, location:"Городок Энергетиков", photo:null, emoji:"⌚", author:"Айбек Осмонов"},
-  {title:{ru:"Электрочайник, новый",kg:"Электр чайнек, жаңы"}, description:{ru:"В упаковке, не подошёл по цвету к кухне.",kg:"Кутусунда, ашкананын түсүнө туура келбей калды."}, category:"home", price:900, isExchange:false, location:"Джал", photo:null, emoji:"☕", author:"Нурия Сатыбалдиева"},
 ];
 
 /* ================= STATE ================= */
@@ -839,7 +798,6 @@ const STATE = {
   filter: { category: null, exchangeOnly:false, query:'' },
   pendingPhotos: [],
   editingListingId: null,
-  favorites: [],
   lastVisitAt: null,
   newItemsCount: 0
 };
@@ -901,44 +859,12 @@ function signOutGoogle(){
     window.google.accounts.id.disableAutoSelect();
   }
   STATE.user = null;
+  STATE._openSellAfterLogin = false;
   localStorage.removeItem('almash_profile');
   closeModal('profileOverlay');
   renderAuthArea();
   renderListings();
   showToast(t('auth.signedOut'));
-}
-function loadFavorites(){
-  const saved = localStorage.getItem('almash_favorites');
-  STATE.favorites = saved ? JSON.parse(saved) : [];
-}
-function saveFavorites(){
-  localStorage.setItem('almash_favorites', JSON.stringify(STATE.favorites));
-}
-function toggleFavorite(id){
-  if(!id) return;
-  if(STATE.favorites.includes(id)){
-    STATE.favorites = STATE.favorites.filter(f=>f!==id);
-  } else {
-    STATE.favorites.push(id);
-  }
-  saveFavorites();
-  updateFavoritesBadge();
-  if(document.getElementById('favoritesOverlay')?.classList.contains('open')){
-    renderFavorites();
-  }
-}
-function isFavorite(id){
-  return STATE.favorites.includes(id);
-}
-function updateFavoritesBadge(){
-  const badge = document.getElementById('favoritesBadge');
-  const btn = document.getElementById('favoritesBtn');
-  if(!badge || !btn) return;
-  if(STATE.favorites.length > 0){
-    btn.classList.add('has-badge');
-  } else {
-    btn.classList.remove('has-badge');
-  }
 }
 function loadLastVisit(){
   const saved = localStorage.getItem('almash_last_visit');
@@ -971,37 +897,6 @@ function renderListingsSkeleton(count){
   `).join('');
 }
 
-function renderFavorites(){
-  const wrap = document.getElementById('favoritesContent');
-  if(!wrap) return;
-  const favItems = STATE.listings.filter(l=>STATE.favorites.includes(l.id));
-  if(favItems.length === 0){
-    wrap.innerHTML = `<div class="empty-state"><h3>${t('favorites.emptyTitle')}</h3><p>${t('favorites.emptySub')}</p></div>`;
-    return;
-  }
-  wrap.innerHTML = '';
-  favItems.forEach(l=>{
-    const cat = CATEGORIES.find(c=>c.id===l.category);
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="card-photo" style="background:${l.photo ? 'none' : 'var(--paper-alt)'};">
-        <button class="favorite-toggle active" data-fav-id="${l.id}" title="${t('favorites.remove')}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.5-1.5-4-1.5-5.5 0L12 7.9 8.7 4.6c-1.5-1.5-4-1.5-5.5 0-1.6 1.6-1.6 4.1 0 5.7l3.1 3.1L12 21l5.7-7.6 3.1-3.1c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
-        </button>
-        ${l.photo ? `<img src="${l.photo}" alt="">` : (l.emoji || cat?.icon || '📦')}
-      </div>
-      <div class="card-body">
-        <div class="card-price">${l.isExchange ? '⇄ ' + t('card.exchange') : (l.price ? formatPrice(l.price) : t('card.free'))}</div>
-        <div class="card-title">${localized(l.title)}</div>
-        <div class="card-meta"><span>${l.location||''}</span><span>${relativeTime(l.createdAt)}</span></div>
-      </div>`;
-    const favButton = card.querySelector('.favorite-toggle');
-    favButton.onclick = (e)=>{ e.stopPropagation(); toggleFavorite(l.id); card.remove(); };
-    card.onclick = ()=>{ closeModal('favoritesOverlay'); openDetail(l); };
-    wrap.appendChild(card);
-  });
-}
 
 async function fetchListingsFromSupabase(){
   try{
@@ -1123,7 +1018,6 @@ async function init(){
     }
   }
 
-  loadFavorites();
   loadLastVisit();
 
   document.body.classList.add('is-loading');
@@ -1133,10 +1027,12 @@ async function init(){
 
   applyTheme(); applyLang();
   renderFilterCats(); renderAuthArea(); renderListings();
-  updateFavoritesBadge();
   updateNewItemsCount();
   bindEvents();
   waitForGoogleInit();
+  if(document.getElementById('profileOverlay')?.classList.contains('open')){
+    requestAnimationFrame(renderProfileSection);
+  }
   document.body.classList.remove('is-loading');
 }
 
@@ -1297,9 +1193,6 @@ function openDetail(l){
       <div class="eyebrow">${cat ? cat.icon+' '+t('cat.'+cat.id) : ''}</div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap:12px;">
         <h2 style="margin: 0;">${localized(l.title)}</h2>
-        <button id="detailFavoriteBtn" title="${isFavorite(l.id) ? t('favorites.remove') : t('favorites.add')}" style="background: none; border: none; cursor: pointer; padding: 8px; color: ${isFavorite(l.id) ? '#ff4b4b' : '#888'}; transition: color 0.2s;">
-          <svg viewBox="0 0 24 24" fill="${isFavorite(l.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        </button>
       </div>
       <div class="detail-price">${l.isExchange ? '⇄ '+t('card.exchange') : (l.price?formatPrice(l.price):t('card.free'))}</div>
       <p>${localized(l.description)}</p>
@@ -1312,16 +1205,6 @@ function openDetail(l){
       <p class="sub">${relativeTime(l.createdAt)}</p>
       <button class="btn btn-primary" style="width:100%;justify-content:center;" id="contactBtn">${t('detail.contact')}</button>
     `;
-    const favBtn = content.querySelector('#detailFavoriteBtn');
-    if(favBtn){
-      favBtn.onclick = ()=>{
-        toggleFavorite(l.id);
-        const active = isFavorite(l.id);
-        favBtn.title = active ? t('favorites.remove') : t('favorites.add');
-        const svg = favBtn.querySelector('svg');
-        if(svg){ svg.setAttribute('fill', active ? 'currentColor' : 'none'); favBtn.style.color = active ? '#ff4b4b' : '#888'; }
-      };
-    }
     content.querySelector('#contactBtn').onclick = ()=>{
       if(waUrl){ window.open(waUrl, '_blank'); }
       else { showToast(t('detail.missingPhone')); }
@@ -1354,6 +1237,11 @@ function openAuthModal(){
   openModal('authOverlay');
 }
 function openProfileModal(){
+  if(!STATE.user){
+    closeModal('profileOverlay');
+    openAuthModal();
+    return;
+  }
   const section = document.getElementById('profileSection');
   section.innerHTML = `
     <div class="modal-skeleton">
@@ -1365,7 +1253,7 @@ function openProfileModal(){
       <div class="skeleton-block" style="height:16px;width:100%;"></div>
     </div>`;
   openModal('profileOverlay');
-  setTimeout(()=> renderProfileSection(), 120);
+  requestAnimationFrame(renderProfileSection);
 }
 function renderProfileSection(){
   const section = document.getElementById('profileSection');
@@ -1393,7 +1281,7 @@ function renderProfileSection(){
     </div>
   `;
   document.getElementById('saveProfileNameBtn')?.addEventListener('click', saveProfileName);
-  document.getElementById('signOutBtn')?.addEventListener('click', signOutGoogle);
+  document.getElementById('signOutBtn')?.addEventListener('click', (e)=>{ e.stopPropagation(); signOutGoogle(); });
   document.getElementById('profileNameInput')?.addEventListener('keydown', (event)=>{
     if(event.key === 'Enter'){
       event.preventDefault();
@@ -1572,9 +1460,15 @@ function bindEvents(){
     if(!window.google?.accounts?.id){ showToast('Google Identity Services не загружен'); return; }
     google.accounts.id.prompt();
   };
-
-  document.getElementById('favoritesBtn').onclick = ()=>{ renderFavorites(); openModal('favoritesOverlay'); };
   document.getElementById('exchangeToggleRow').addEventListener('change', togglePriceField);
+
+  document.body.addEventListener('click', e=>{
+    const signOutBtn = e.target.closest('#signOutBtn');
+    if(signOutBtn){
+      e.preventDefault();
+      signOutGoogle();
+    }
+  });
 
   document.getElementById('dropzone').onclick = ()=> document.getElementById('photoInput').click();
   document.getElementById('photoInput').onchange = async (e)=>{
