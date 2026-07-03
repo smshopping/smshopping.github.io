@@ -56,9 +56,11 @@
   a{color:inherit;}
   button{font-family:inherit;}
   img{max-width:100%;display:block;}
-  a, button, input, select, textarea, label, .btn, .icon-btn {
+  a, button, input, select, textarea, label, .btn, .icon-btn, .mobile-menu-toggle, .modal-close, .filter-cats button, .nav-controls button {
     -webkit-tap-highlight-color: transparent;
     tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
   }
   ::selection{background:var(--accent-marigold); color:#211D17;}
   :focus-visible{outline:2px solid var(--accent-marigold); outline-offset:2px;}
