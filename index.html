@@ -6,7 +6,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  
   gtag('config', 'G-5PGHN66VVS');
 </script>
 <meta charset="UTF-8">
@@ -71,8 +70,16 @@
   }
   ::selection{background:var(--accent-marigold); color:#211D17;}
   :focus-visible{outline:2px solid var(--accent-marigold); outline-offset:2px;}
+  html{scroll-behavior:smooth;}
+  body{overflow-x:hidden;}
+  .btn, .icon-btn, .card, .filter-cats button, .search-box, .filters, .overlay, .modal, .hero-stat, .hero-visual{
+    will-change: transform, opacity;
+  }
+  .btn, .icon-btn, .card, .filter-cats button, .search-box, .filters, .overlay, .modal, .hero-stat, .hero-visual{
+    transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s cubic-bezier(.2,.8,.2,1), background-color .24s ease, color .24s ease, border-color .24s ease, opacity .24s ease, filter .24s ease;
+  }
   @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
   }
 
   .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
@@ -89,8 +96,9 @@
   .site-header{
     position:sticky; top:0; z-index:40;
     background:color-mix(in srgb, var(--paper) 88%, transparent);
-    backdrop-filter: blur(3.5px);
+    backdrop-filter: blur(2.5px);
     border-bottom:1px solid var(--line);
+    transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
   }
   .header-inner{display:flex; align-items:center; gap:20px; padding:14px 0;}
   .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; font-size:1.32rem; white-space:nowrap;}
@@ -164,8 +172,18 @@
   body.is-loading .card,
   body.is-loading .filters,
   body.is-loading .search-box{filter:blur(1px);}
-  .mobile-menu-toggle{display:none; width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--card-bg); color:var(--ink); align-items:center; justify-content:center; cursor:pointer;}
-  .mobile-menu-toggle:hover{border-color:var(--accent-marigold);}
+  .mobile-menu-toggle{display:none; width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--card-bg); color:var(--ink); align-items:center; justify-content:center; cursor:pointer; padding:0; position:relative; overflow:hidden;}
+  .mobile-menu-toggle:hover{border-color:var(--accent-marigold); transform:translateY(-1px);}
+  .burger-box{position:relative; width:18px; height:14px; display:inline-block;}
+  .burger-box::before, .burger-box::after, .burger-inner{
+    content:''; position:absolute; left:0; width:100%; height:2px; border-radius:999px; background:currentColor; transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .2s ease, top .24s ease;
+  }
+  .burger-box::before{top:0;}
+  .burger-inner{top:6px;}
+  .burger-box::after{top:12px;}
+  .mobile-menu-toggle.is-open .burger-box::before{top:6px; transform:rotate(45deg);}
+  .mobile-menu-toggle.is-open .burger-box::after{top:6px; transform:rotate(-45deg);}
+  .mobile-menu-toggle.is-open .burger-inner{opacity:0; transform:translateX(-4px);}
 
   /* ---------- Hero ---------- */
   .hero{position:relative; overflow:hidden; padding:64px 0 40px;}
@@ -217,22 +235,27 @@
   .card{
     background:var(--card-bg); border:1px solid var(--line); border-radius:var(--radius-m); overflow:hidden;
     cursor:pointer; transition: transform .18s ease, box-shadow .18s ease; display:flex; flex-direction:column;
+    position:relative;
   }
   .card:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
   .card-photo{
     aspect-ratio:4/3; position:relative; display:flex; align-items:center; justify-content:center;
-    font-size:2.6rem; overflow:hidden;
+    font-size:2.6rem; overflow:hidden; background:linear-gradient(135deg, var(--paper-alt), var(--card-bg));
   }
   .card-photo img{width:100%; height:100%; object-fit:cover;}
   .card-tag{
     position:absolute; top:10px; left:10px; background:var(--accent-brick); color:#fff; font-size:.68rem;
     font-weight:800; letter-spacing:.03em; text-transform:uppercase; padding:4px 9px; border-radius:999px;
+    box-shadow:0 6px 14px rgba(176,58,42,.22);
   }
-  .card-body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1;}
+  .card-body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1; min-height:0;}
   .card-price{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.02rem; color:var(--accent-indigo);}
   html[data-theme="dark"] .card-price{color:var(--accent-marigold);}
-  .card-title{font-weight:700; font-size:.94rem; line-height:1.3;}
-  .card-meta{font-size:.78rem; color:var(--ink-soft); display:flex; justify-content:space-between; margin-top:auto; padding-top:6px;}
+  .card-title{font-weight:700; font-size:.94rem; line-height:1.3; display:-webkit-box; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.6em;}
+  .card-meta{font-size:.78rem; color:var(--ink-soft); display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:auto; padding-top:6px;}
+  .card-meta span:last-child{opacity:.8; white-space:nowrap;}
+  .card-bottom{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px;}
+  .card-bottom .mono{font-size:.78rem; color:var(--ink-soft);}
   .empty-state{grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--ink-soft);}
   .empty-state svg{width:50px; height:50px; color:var(--accent-marigold); margin-bottom:14px;}
 
@@ -295,6 +318,7 @@
     padding:13px 16px; background:var(--card-bg); cursor:pointer; font-weight:700; font-size:.92rem; color:var(--ink);
     transition:border-color .2s, background .2s;
   }
+  
   .google-row:hover{border-color:var(--accent-marigold);}
   .auth-note{font-size:.76rem; color:var(--ink-soft); margin-top:16px; line-height:1.5; border-top:1px solid var(--line); padding-top:14px;}
   .profile-section{display:grid; gap:18px;}
@@ -372,8 +396,12 @@
     .header-spacer{flex-basis:100%; height:0;}
     .brand span.brand-text{display:none;}
     .mobile-menu-toggle{display:flex;}
-    .nav-controls{display:none; position:absolute; top:100%; left:0; width:100%; flex-direction:column; align-items:stretch; gap:12px; background:var(--paper); border-top:1px solid var(--line); padding:16px 12px; box-shadow:0 12px 24px rgba(0,0,0,0.08); z-index:20;}
-    .site-header.open .nav-controls{display:flex;}
+    .nav-controls{
+      display:flex; position:absolute; top:calc(100% + 8px); left:12px; right:12px; flex-direction:column; align-items:stretch; gap:12px;
+      background:color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:18px; padding:16px 12px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.12); z-index:30; opacity:0; transform:translateY(-8px) scale(.98); pointer-events:none;
+    }
+    .site-header.open .nav-controls{opacity:1; transform:translateY(0) scale(1); pointer-events:auto;}
     .nav-controls .lang-switch{order:0; width:100%;}
     .nav-controls .lang-switch button{flex:1;}
     .nav-controls .icon-btn, .nav-controls .btn, .nav-controls .user-chip{width:100%; justify-content:center;}
@@ -389,12 +417,14 @@
     .hero-cta{flex-direction:column; align-items:stretch; gap:10px;}
     .hero-cta .btn{width:100%;}
     .listings-grid{grid-template-columns:1fr; gap:12px;}
-    .card{display:flex; gap:12px; padding:10px; align-items:flex-start;}
-    .card-photo{width:110px; height:110px; flex:0 0 110px; border-radius:12px;}
-    .card-body{padding:6px 0 6px 0;}
-    .card-title{font-size:.95rem;}
-    .card-price{font-size:.95rem;}
-    .card-meta{font-size:.78rem;}
+    .card{display:flex; flex-direction:row; gap:12px; padding:10px; align-items:flex-start; border-radius:16px; box-shadow:0 6px 18px rgba(33,29,23,0.04);}
+    .card-photo{width:108px; height:108px; flex:0 0 108px; border-radius:12px; aspect-ratio:auto;}
+    .card-body{padding:2px 0; gap:5px; flex:1;}
+    .card-title{font-size:.92rem; min-height:2.4em;}
+    .card-price{font-size:.94rem;}
+    .card-meta{font-size:.74rem; flex-wrap:wrap; gap:6px;}
+    .card-bottom{margin-top:6px;}
+    .card-bottom .btn{padding:7px 10px; font-size:.74rem;}
     .modal{padding:18px; margin:0 8px; border-radius:14px;}
     .modal .modal-actions{display:flex; flex-direction:column; gap:8px;}
     .modal .modal-actions .btn{width:100%;}
@@ -415,8 +445,10 @@
       </svg>
       <span class="brand-text">SMART SHOPPING</span>
     </div>
-    <button class="icon-btn mobile-menu-toggle" id="mobileMenuToggle" aria-label="Меню">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <button class="icon-btn mobile-menu-toggle" id="mobileMenuToggle" aria-label="Меню" aria-expanded="false">
+      <span class="burger-box" aria-hidden="true">
+        <span class="burger-inner"></span>
+      </span>
     </button>
     <div class="header-spacer"></div>
     <div class="nav-controls" id="headerNavControls">
@@ -446,18 +478,14 @@
         <button class="btn btn-primary" id="heroSellBtn" data-i18n="hero.cta.sell">Разместить объявление</button>
         <button class="btn btn-outline" id="heroBrowseBtn" data-i18n="hero.cta.browse">Смотреть объявления</button>
       </div>
+      <section class="hero">
+  <svg class="spiral-bg" viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+    <path d="M320 200 C 320 100, 220 70, 160 120 C 100 170, 130 260, 210 250 C 260 244, 260 190, 215 190"/>
+  </svg>
       <div class="hero-stats">
         <div class="hero-stat"><b id="statListings">—</b><span data-i18n="hero.stat.listings">объявлений сейчас</span></div>
-        <div class="hero-stat"><b>0 сом</b><span data-i18n="hero.stat.fee">комиссия площадки</span></div>
-        <div class="hero-stat"><b>8</b><span data-i18n="hero.stat.categories">категорий</span></div>
+        <div class="hero-stat"><b>8</b><span data-i18n="hero.stat.categories">всего категорий</span></div>
       </div>
-    </div>
-    <div class="hero-visual">
-      <svg viewBox="0 0 300 300" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round">
-        <path d="M240 150 C 240 80, 170 60, 120 95 C 70 130, 90 195, 145 188 C 180 183, 180 145, 148 145"/>
-        <path d="M240 150 C 240 220, 170 240, 120 205"/>
-        <circle cx="150" cy="150" r="6" fill="currentColor" stroke="none"/>
-      </svg>
     </div>
   </div>
 </section>
@@ -477,7 +505,10 @@
       </div>
       <button class="btn btn-ghost" id="resetFilters" data-i18n="filters.reset">Сбросить фильтры</button>
     </aside>
-
+<section class="hero">
+  <svg class="spiral-bg" viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+    <path d="M320 200 C 320 100, 220 70, 160 120 C 100 170, 130 260, 210 250 C 260 244, 260 190, 215 190"/>
+  </svg>
     <div>
       <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -512,7 +543,7 @@
     <p class="sub" data-i18n="auth.sub">Регистрация только через Google-аккаунт — быстро и без паролей.</p>
     <div id="googleStep1">
       <div class="google-row" id="googleContinueBtn"></div>
-      <p class="auth-note" data-i18n="auth.note">Для входа используйте кнопку выше. Откройте сайт по HTTPS и убедитесь, что домен добавлен в Authorized JavaScript origins.</p>
+      <p class="auth-note" data-i18n="auth.note">Для входа используйте кнопку выше. Откройте сайт по HTTPS и убедитесь, что у вас присутствует Google аккаунт.</p>
     </div>
   </div>
 </div>
@@ -563,7 +594,7 @@
       </div>
       <div class="field exchange-toggle" id="exchangeToggleRow">
         <input type="checkbox" id="isExchange">
-        <span data-i18n="sell.exchangeLabel">Готов(а) к обмену вместо продажи</span>
+        <span data-i18n="sell.exchangeLabel">Готов(-а) к обмену вместо продажи</span>
       </div>
       <div class="field" id="priceField">
         <label data-i18n="sell.price">Цена, сом</label>
@@ -596,7 +627,7 @@ const I18N = {
     "hero.cta.browse":"Смотреть объявления",
     "hero.stat.listings":"объявлений сейчас",
     "hero.stat.fee":"комиссия площадки",
-    "hero.stat.categories":"категорий",
+    "hero.stat.categories":"всего категорий",
     "filters.categories":"Категории",
     "filters.all":"Все категории",
     "filters.exchangeOnly":"Только обмен",
@@ -609,7 +640,7 @@ const I18N = {
     "auth.title":"Войти, чтобы продолжить",
     "auth.sub":"Регистрация только через Google-аккаунт — быстро и без паролей.",
     "auth.google":"Продолжить с Google",
-    "auth.note":"Для входа используйте Google. Вставьте свой Google OAuth Client ID и запустите страницу через веб-сервер.",
+    "auth.note":"Для входа используйте свой Google аккаунт. В случае прерывания процесса, перезапустите страницу и попробуйте снова.",
     "auth.choose":"Выберите аккаунт",
     "sell.title":"Новое объявление",
     "sell.sub":"Заполните карточку — она сразу появится в общей ленте.",
@@ -1459,8 +1490,14 @@ function bindEvents(){
   const header = document.querySelector('.site-header');
   const mobileMenuToggle = document.getElementById('mobileMenuToggle');
   const mobileNav = document.getElementById('headerNavControls');
-  function closeMobileMenu(){ if(header) header.classList.remove('open'); }
-  if(mobileMenuToggle){ mobileMenuToggle.onclick = ()=> header?.classList.toggle('open'); }
+  function setMobileMenuState(open){
+    if(!header || !mobileMenuToggle) return;
+    header.classList.toggle('open', open);
+    mobileMenuToggle.classList.toggle('is-open', open);
+    mobileMenuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeMobileMenu(){ setMobileMenuState(false); }
+  if(mobileMenuToggle){ mobileMenuToggle.onclick = ()=> setMobileMenuState(!header?.classList.contains('open')); }
   if(mobileNav){
     mobileNav.addEventListener('click', e=>{
       if(header?.classList.contains('open') && !e.target.closest('#mobileMenuToggle')){
@@ -1468,6 +1505,8 @@ function bindEvents(){
       }
     });
   }
+  window.addEventListener('resize', ()=>{ if(window.innerWidth > 420) closeMobileMenu(); });
+  document.addEventListener('scroll', ()=>{ if(header?.classList.contains('open')) closeMobileMenu(); }, {passive:true});
   document.getElementById('sellBtn').onclick = ()=>{ closeMobileMenu(); requestSell(); };
   document.getElementById('heroSellBtn').onclick = ()=>{ closeMobileMenu(); requestSell(); };
   document.getElementById('heroBrowseBtn').onclick = ()=>{
@@ -1490,7 +1529,7 @@ function bindEvents(){
   document.getElementById('googleContinueBtn').onclick = ()=>{
     if(!window.google?.accounts?.id){ showToast('Google Identity Services не загружен'); return; }
     if(!isGoogleAuthSupported()){
-      showToast('Google вход работает только по HTTPS или localhost. Откройте страницу по безопасному адресу.');
+      showToast('Google вход работает только по HTTPS, откройте страницу по безопасному адресу.');
       return;
     }
     window.google.accounts.id.prompt((notification)=>{
