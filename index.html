@@ -196,7 +196,7 @@
   .hero h1{font-size:clamp(2.1rem, 4vw, 3.4rem); line-height:1.06;}
   .hero p.lead{margin-top:18px; font-size:1.12rem; color:var(--ink-soft); max-width:46ch; line-height:1.55;}
   .hero-cta{display:flex; gap:12px; margin-top:30px; flex-wrap:wrap;}
-  .hero-stats{display:flex; gap:28px; margin-top:38px; flex-wrap:wrap;}
+  .hero-stats{display:flex; gap:40px; justify-content:flex-start; margin-top:30px; flex-wrap:wrap;}
   .hero-stat b{display:block; font-family:'Fraunces',serif; font-size:1.6rem;}
   .hero-stat span{font-size:.8rem; color:var(--ink-soft);}
   .hero-visual{position:relative; height:340px; display:flex; align-items:center; justify-content:center;}
@@ -214,13 +214,23 @@
     padding:20px; display:flex; flex-direction:column; gap:18px;
   }
   .filters h3{font-size:.95rem;}
-  .filter-cats{display:flex; flex-direction:column; gap:4px;}
+  .filter-group{display:flex; flex-direction:column; gap:8px;}
+  .filter-dropdown-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
+    border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:var(--card-bg);
+    color:var(--ink); cursor:pointer; font-weight:700; font-size:.9rem; text-align:left;
+  }
+  .filter-dropdown-toggle svg{width:16px; height:16px; transition:transform .2s ease; flex-shrink:0;}
+  .filter-dropdown-toggle[aria-expanded="true"] svg{transform:rotate(180deg);}
+  .filter-dropdown-value{color:var(--ink-soft); font-weight:600; font-size:.8rem; margin-left:auto; padding-right:4px;}
+  .filter-cats{display:none; flex-direction:column; gap:4px; padding:4px 0 0;}
+  .filter-cats.open{display:flex;}
   .filter-cats button{
-    text-align:left; background:none; border:none; padding:7px 8px; border-radius:8px; cursor:pointer;
+    text-align:left; background:none; border:none; padding:8px 10px; border-radius:10px; cursor:pointer;
     color:var(--ink-soft); font-size:.87rem; display:flex; justify-content:space-between; gap:6px;
   }
   .filter-cats button.active{background:var(--paper-alt); color:var(--ink); font-weight:700;}
-  .filter-cats button:hover{color:var(--ink);}
+  .filter-cats button:hover{color:var(--ink); background:rgba(33,29,23,0.03);}
   .checkbox-row{display:flex; align-items:center; gap:9px; font-size:.87rem; cursor:pointer;}
   .search-box{
     display:flex; align-items:center; gap:8px; border:1.5px solid var(--line); border-radius:999px;
@@ -493,8 +503,12 @@
 <section class="market">
   <div class="wrap market-inner">
     <aside class="filters">
-      <div>
-        <h2 data-i18n="filters.categories">Категории</h2>
+      <div class="filter-group">
+        <button class="filter-dropdown-toggle" id="categoryToggle" type="button" aria-expanded="false">
+          <span data-i18n="filters.categories">Категории</span>
+          <span class="filter-dropdown-value" id="categoryToggleValue" data-i18n="filters.all">Все категории</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
         <div class="filter-cats" id="filterCats"></div>
       </div>
       <div>
@@ -673,7 +687,7 @@ const I18N = {
     "detail.exchangeNote":"Владелец готов обменять эту вещь",
     "detail.noPhone":"Телефон не указан",
     "detail.missingPhone":"Телефон продавца не задан или написан неверно",
-    "auth.loggedInAs":"Вы вошли как",
+    "auth.loggedInAs":"Добро пожаловать, вы вошли как",
     "auth.logout":"Выйти",
     "auth.signedOut":"Вы вышли",
     "profile.title":"Профиль",
@@ -857,7 +871,7 @@ const STATE = {
   theme: 'light',
   user: null,
   listings: [],
-  filter: { category: null, exchangeOnly:false, query:'' },
+  filter: { category: null, exchangeOnly:false, query:'', categoryMenuOpen:false },
   pendingPhotos: [],
   editingListingId: null,
   lastVisitAt: null,
@@ -1143,16 +1157,27 @@ async function savePrefs(){ await storageSet('almash_prefs', {lang:STATE.lang, t
 /* ================= CHIPS & FILTER CATS ================= */
 function renderFilterCats(){
   const wrap = document.getElementById('filterCats');
-  wrap.innerHTML = '';
-  CATEGORIES.forEach((c, idx)=>{
-    const count = STATE.listings.filter(l=>l.category===c.id).length;
-    const btn = document.createElement('button');
-    btn.className = STATE.filter.category===c.id ? 'active fade-in' : 'fade-in';
-    btn.style.animationDelay = `${idx * 40}ms`;
-    btn.innerHTML = `<span>${c.icon} ${t('cat.'+c.id)}</span><span class="mono">${count}</span>`;
-    btn.onclick = ()=>{ STATE.filter.category = (STATE.filter.category===c.id? null : c.id); renderFilterCats(); renderListings(); };
-    wrap.appendChild(btn);
-  });
+  const toggle = document.getElementById('categoryToggle');
+  const value = document.getElementById('categoryToggleValue');
+  if(wrap){
+    wrap.innerHTML = '';
+    wrap.classList.toggle('open', Boolean(STATE.filter.categoryMenuOpen));
+    CATEGORIES.forEach((c, idx)=>{
+      const count = STATE.listings.filter(l=>l.category===c.id).length;
+      const btn = document.createElement('button');
+      btn.className = STATE.filter.category===c.id ? 'active fade-in' : 'fade-in';
+      btn.style.animationDelay = `${idx * 40}ms`;
+      btn.innerHTML = `<span>${c.icon} ${t('cat.'+c.id)}</span><span class="mono">${count}</span>`;
+      btn.onclick = ()=>{ STATE.filter.category = (STATE.filter.category===c.id? null : c.id); STATE.filter.categoryMenuOpen = false; renderFilterCats(); renderListings(); };
+      wrap.appendChild(btn);
+    });
+  }
+  if(toggle){
+    toggle.setAttribute('aria-expanded', String(Boolean(STATE.filter.categoryMenuOpen)));
+  }
+  if(value){
+    value.textContent = STATE.filter.category ? t('cat.'+STATE.filter.category) : t('filters.all');
+  }
 }
 function renderCategorySelect(){
   const sel = document.getElementById('itemCategory');
@@ -1608,15 +1633,26 @@ function bindEvents(){
     STATE.editingListingId = null;
     closeModal('sellOverlay');
     showToast(t('sell.published'));
-    STATE.filter = {category:null, exchangeOnly:false, query:''};
+    STATE.filter = {category:null, exchangeOnly:false, query:'', categoryMenuOpen:false};
     document.getElementById('searchInput').value='';
     document.getElementById('exchangeOnly').checked=false;
     renderFilterCats(); renderListings();
   });
 
+  document.getElementById('categoryToggle').onclick = (e)=>{
+    e.stopPropagation();
+    STATE.filter.categoryMenuOpen = !STATE.filter.categoryMenuOpen;
+    renderFilterCats();
+  };
+  document.addEventListener('click', (e)=>{
+    if(!e.target.closest('.filter-group')){
+      STATE.filter.categoryMenuOpen = false;
+      renderFilterCats();
+    }
+  });
   document.getElementById('exchangeOnly').onchange = (e)=>{ STATE.filter.exchangeOnly = e.target.checked; renderListings(); };
   document.getElementById('resetFilters').onclick = ()=>{
-    STATE.filter = {category:null, exchangeOnly:false, query:''};
+    STATE.filter = {category:null, exchangeOnly:false, query:'', categoryMenuOpen:false};
     document.getElementById('searchInput').value='';
     document.getElementById('exchangeOnly').checked=false;
     renderFilterCats(); renderListings();
